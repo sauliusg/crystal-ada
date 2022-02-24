@@ -130,7 +130,7 @@ begin
          end if;
          File_Processed := True;
          
-         if not End_Of_File (Current_File.all) then
+         while not End_Of_File (Current_File.all) loop
             declare
                N : Integer := Integer'Value (Get_Line (Current_File.all));
                Comment : String := Get_Line (Current_File.all);
@@ -143,9 +143,11 @@ begin
                   Get (Current_File.all, XYZ_Atoms.Atoms(I).Y, Width => 0);
                   Get (Current_File.all, XYZ_Atoms.Atoms(I).Z, Width => 0);
                end loop;
+               -- Read the remaining EOL marker:
+               Skip_Line (Current_File.all);
                Put_Atoms (XYZ_Atoms);
             end;
-         end if;
+         end loop;
          
          if Is_Open (Current_File.all) then
             Close (Current_File.all);
