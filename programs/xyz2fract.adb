@@ -61,7 +61,16 @@ procedure Xyz2fract is
          end case;
       end loop;   
    end Process_Options;
-
+   
+   type Matrix3x3 is array (1..3,1..3) of Long_Float;
+   
+   function Matrix_Orth_From_Fract ( Cell : Unit_Cell_Type ) 
+                                   return Matrix3x3
+   is
+   begin
+      return ( (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0) );
+   end;
+   
    type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
        
