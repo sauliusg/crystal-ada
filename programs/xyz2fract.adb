@@ -30,6 +30,8 @@ procedure Xyz2fract is
    
    Unit_Cell : Unit_Cell_Type := (others => 0.0);
    
+   Unit_Cell_Given : Boolean := False;
+   
    procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type ) is
       Position : Integer := Line'First - 1;
    begin
@@ -45,10 +47,12 @@ procedure Xyz2fract is
             when 'c' =>
                -- Put_Line("Seen '-c' with parameter '" & Parameter & "'") ;
                Parse_Unit_Cell (Parameter, Unit_Cell);
+               Unit_Cell_Given := True;
             when '-' =>
                if Index("-cell", Full_Switch) = 1 then
                   -- Put_Line ("Seen --cell with arg='" & Parameter & "'");
                   Parse_Unit_Cell (Parameter, Unit_Cell);
+                  Unit_Cell_Given := True;
                elsif Index("-help", Full_Switch) = 1 then
                   Put_Line ("Seen --help");
                end if;
@@ -84,10 +88,13 @@ procedure Xyz2fract is
       Put (Molecule.Atoms'Last, 1); New_Line;
       Put ( To_String (Molecule.Comment) );
       
-      Put (" CELL: ");
-      for I in Unit_Cell'Range loop
-         Put (Unit_Cell(I)); Put (" ");
-      end loop;
+      if Unit_Cell_Given then
+         Put (" CELL: ");
+         for I in Unit_Cell'Range loop
+            Put (Unit_Cell(I)); Put (" ");
+         end loop;
+      end if;
+      
       New_Line;
 
       for I in Molecule.Atoms'Range loop
