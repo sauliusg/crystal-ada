@@ -71,8 +71,8 @@ procedure Xyz2fract is
    
    type Matrix3x3 is array (1..3,1..3) of Long_Float;
    
-   function Matrix_Orth_From_Fract ( Cell : Unit_Cell_Type ) 
-                                   return Matrix3x3
+   function Matrix_Ortho_From_Fract ( Cell : Unit_Cell_Type ) 
+                                    return Matrix3x3
    is
       A : Long_Float := Cell(1);
       B : Long_Float := Cell(2);
@@ -86,9 +86,33 @@ procedure Xyz2fract is
       SG : Long_Float := Sin(Gamma);
    begin
       return ( 
-               (0.0, 0.0, 0.0),
-               (0.0, 0.0, 0.0), 
-               (0.0, 0.0, 0.0) 
+               (   A, B * CG, C * CB           ),
+               ( 0.0, B * SG, C * (CA - CB*CG) ), 
+               ( 0.0,    0.0, 
+                 C * Sqrt (SG*SG - CA*CA - CB*CB + 2.0*CA*CB*CG)/SG )
+             );
+   end;
+   
+   function Matrix_Fract_From_Ortho ( Cell : in Unit_Cell_Type ) 
+                                    return Matrix3x3
+   is
+      A : Long_Float := Cell(1);
+      B : Long_Float := Cell(2);
+      C : Long_Float := Cell(3);
+      Alpha : Long_Float := Cell(4) * Ada.Numerics.Pi / 180.0; -- in radians;
+      Beta  : Long_Float := Cell(5) * Ada.Numerics.Pi / 180.0;
+      Gamma : Long_Float := Cell(6) * Ada.Numerics.Pi / 180.0;
+      CA : Long_Float := Cos(Alpha);
+      CB : Long_Float := Cos(Beta);
+      CG : Long_Float := Cos(Gamma);
+      SG : Long_Float := Sin(Gamma);
+      CTG : Long_Float := CG/SG;
+      D : Long_Float := Sqrt(SG**2 - CB**2 - CA**2 + 2.0*CA*CB*CG);
+   begin
+      return ( 
+               ( 1.0/A, -(1.0/A)*CTG,     (CA*CG-CB)/(A*D) ),
+               (   0.0,   1.0/(B*SG), -(CA-CB*CG)/(B*SG*D) ), 
+               (   0.0,          0.0,             SG/(C*D) )
              );
    end;
    
@@ -112,6 +136,17 @@ procedure Xyz2fract is
          Comment : Unbounded_String;
          Atoms : Atom_Descriptor_Array (1..Size);
       end record;
+   
+   function "*" ( M : Matrix3x3; A : Atom_Descriptor )
+                return Atom_Descriptor is
+      R : Atom_Descriptor;
+   begin
+      R.Atom_Type := A.Atom_Type;
+      R.X := A.X*M(1,1) + A.Y*M(1,2) + A.Z*M(1,3);
+      R.Y := A.X*M(2,1) + A.Y*M(2,2) + A.Z*M(2,3);
+      R.Z := A.X*M(3,1) + A.Y*M(3,2) + A.Z*M(3,3);
+      return R;
+   end;
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
    begin
@@ -139,9 +174,13 @@ procedure Xyz2fract is
       end loop;
    end;
    
+   F4O : Matrix3x3;
+   
 begin
    
    Process_Options;
+   
+   F4O := Matrix_Fract_From_Ortho (Unit_Cell);
    
    declare
       File_Name : Unbounded_String;
@@ -182,6 +221,11 @@ begin
                end loop;
                -- Read the remaining EOL marker:
                Skip_Line (Current_File.all);
+               
+               for I in XYZ_Atoms.Atoms'Range loop
+                  XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
+               end loop;
+               
                Put_Atoms (XYZ_Atoms);
             end;
          end loop;
