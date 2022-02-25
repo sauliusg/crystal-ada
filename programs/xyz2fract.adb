@@ -22,9 +22,16 @@ with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with GNAT.Command_Line;      use GNAT.Command_Line;
 
+with Ada.Numerics;
+with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Unchecked_Deallocation;
 
 procedure Xyz2fract is
+   
+   package Long_Float_Elementary_Functions is 
+      new Ada.Numerics.Generic_Elementary_Functions (Long_Float);
+   
+   use Long_Float_Elementary_Functions;
    
    type Unit_Cell_Type is array (1..6) of Long_Float;
    
@@ -67,8 +74,22 @@ procedure Xyz2fract is
    function Matrix_Orth_From_Fract ( Cell : Unit_Cell_Type ) 
                                    return Matrix3x3
    is
+      A : Long_Float := Cell(1);
+      B : Long_Float := Cell(2);
+      C : Long_Float := Cell(3);
+      Alpha : Long_Float := Cell(4) * Ada.Numerics.Pi / 180.0; -- in radians;
+      Beta  : Long_Float := Cell(5) * Ada.Numerics.Pi / 180.0;
+      Gamma : Long_Float := Cell(6) * Ada.Numerics.Pi / 180.0;
+      CA : Long_Float := Cos(Alpha);
+      CB : Long_Float := Cos(Beta);
+      CG : Long_Float := Cos(Gamma);
+      SG : Long_Float := Sin(Gamma);
    begin
-      return ( (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0) );
+      return ( 
+               (0.0, 0.0, 0.0),
+               (0.0, 0.0, 0.0), 
+               (0.0, 0.0, 0.0) 
+             );
    end;
    
    type Access_File_Type is access File_Type;
