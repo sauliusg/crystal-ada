@@ -43,15 +43,14 @@ out outputs: ${OUTP_FILES}
 
 # Dependencies for the test files:
 
-include .depend
+include .sh-depend
 
-.depend: ${INP_FILES} ${OPT_FILES}
+.sh-depend: ${SH_FILES}
 	date '+# %F %T %Z' > $@
 	for i in $^; do \
 		echo "$$i: $$(echo $$i | sed -e 's/_[0-9]*\..*$$//' \
 			| sed 's,${TEST_DIR},${BIN_DIR},')" \
-			| sed 's,.inp,.diff,' \
-			| sed 's,.opt,.diff,' \
+			| sed 's,.sh,.diff,' \
 			| sed 's,/cases/,/outputs/,' \
 		; \
 	done | sort | uniq >> $@

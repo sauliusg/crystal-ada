@@ -21,9 +21,20 @@ BIN_DIR  ?= .
 TEST_DIR ?= tests/cases
 OUTP_DIR ?= tests/outputs
 
-TEST_FILES ?= ${wildcard ${TEST_DIR}/*.inp}
-DIFF_FILES += ${TEST_FILES:${TEST_DIR}/%.inp=${OUTP_DIR}/%.diff}
-OUTP_FILES += ${TEST_FILES:${TEST_DIR}/%.inp=${OUTP_DIR}/%.out}
+INP_FILES ?= ${wildcard ${TEST_DIR}/*.inp}
+OPT_FILES ?= ${wildcard ${TEST_DIR}/*.opt}
+
+TEST_FILES ?= ${INP_FILES} ${OPT_FILES}
+
+DIFF_FILES += $(sort \
+	${INP_FILES:${TEST_DIR}/%.inp=${OUTP_DIR}/%.diff} \
+	${OPT_FILES:${TEST_DIR}/%.opt=${OUTP_DIR}/%.diff} \
+)
+
+OUTP_FILES += $(sort \
+	${INP_FILES:${TEST_DIR}/%.inp=${OUTP_DIR}/%.out} \
+	${OPT_FILES:${TEST_DIR}/%.opt=${OUTP_DIR}/%.out} \
+)
 
 .PHONY: all clean cleanAll distclean test tests out outputs
 
@@ -34,6 +45,23 @@ all:
 test tests: ${DIFF_FILES}
 
 out outputs: ${OUTP_FILES}
+
+#------------------------------------------------------------------------------
+
+# Dependencies for the test files:
+
+include .test-depend
+
+.test-depend: ${INP_FILES} ${OPT_FILES}
+	date '+# %F %T %Z' > $@
+	for i in $^; do \
+		echo "$$i: $$(echo $$i | sed -e 's/_[0-9]*\..*$$//' \
+			| sed 's,${TEST_DIR},${BIN_DIR},')" \
+			| sed 's,.inp,.diff,' \
+			| sed 's,.opt,.diff,' \
+			| sed 's,/cases/,/outputs/,' \
+		; \
+	done | sort | uniq >> $@
 
 #------------------------------------------------------------------------------
 
