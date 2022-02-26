@@ -27,24 +27,56 @@ with Ada.Unchecked_Deallocation;
 
 procedure XyzFormat is
    
+   -- Format number for printing out floating point numbers:
+   Integer_Size : Integer := 15;
+   Fraction_Size : Integer := 14;
+   Exponent_Size : Integer := 3;
+   
+   procedure Parse_Float_Format ( Line : String;
+                                  Integer_Size : in out Integer;
+                                  Fraction_Size : in out Integer;
+                                  Exponent_Size : in out Integer
+                                ) is
+      Line_Without_Commas : String := Line;
+      Position : Integer := Line_Without_Commas'First - 1;
+      procedure Replace ( S : in out String; Chr_From, Chr_To : Character ) is
+      begin
+         for I in S'Range loop
+            if S(I) = Chr_From then
+               S(I) := Chr_To;
+            end if;
+         end loop;
+      end;
+   begin
+      Replace (Line_Without_Commas, ',', ' ');
+      Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last), Integer_Size, Position );
+      Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last), Fraction_Size, Position );
+      Get (Line_Without_Commas(POsition+1..Line_Without_Commas'Last), Exponent_Size, Position );
+   end;
+   
    procedure Process_Options is
+      Help_Option : String := "-help -hel -he -h h";
+      Float_Format_Option : String := "f: " &
+        "-float-format= -float-forma= -float-form= -float-for= " &
+        "-float-fo= -float-f= -float= -floa= -flo= -fl= -f=";
    begin
       loop
-         case Getopt ("-help -hel -he -h h") is
+         case Getopt (Help_Option & " " & Float_Format_Option) is
+            when 'f' =>
+               Parse_Float_Format (Parameter, Integer_Size, 
+                                   Fraction_Size, Exponent_Size);
             when '-' =>
                if Index("-help", Full_Switch) = 1 then
                   Put_Line ("Seen --help");
+               elsif Index("-float-format", Full_Switch) = 1 then
+                  Parse_Float_Format (Parameter, Integer_Size, 
+                                      Fraction_Size, Exponent_Size);
                end if;
             when others =>
                exit;
          end case;
       end loop;   
    end Process_Options;
-   
-   -- Format number for printing out floating point numbers:
-   Integer_Size : Integer := 15;
-   Fraction_Size : Integer := 14;
-   Exponent_Size : Integer := 3;
    
    type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
