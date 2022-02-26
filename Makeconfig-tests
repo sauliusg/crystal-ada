@@ -1,0 +1,19 @@
+#---*- Makefile -*-------------------------------------------------------
+#$Author: saulius $
+#$Date: 2020-10-02 09:04:40 +0300 (Fri, 02 Oct 2020) $
+#$Revision: 255 $
+#$URL: svn+ssh://saulius-grazulis.lt/home/saulius/svn-repositories/makefiles/multiscript-testing/Makelocal-multiscript-testing $
+#------------------------------------------------------------------------
+
+# Run tests in a test directory (tests/ by default) and report if
+# all tests pass.
+
+# USAGE:
+#     make clean
+#     make distclean
+#     make tests
+#     make
+
+#------------------------------------------------------------------------------
+
+BIN_DIR = bin
