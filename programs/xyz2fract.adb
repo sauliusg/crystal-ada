@@ -24,7 +24,8 @@ with GNAT.Command_Line;      use GNAT.Command_Line;
 
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
-
+with Xyz_File;               use Xyz_File;
+  
 with Ada.Unchecked_Deallocation;
 
 procedure Xyz2fract is
@@ -66,64 +67,17 @@ procedure Xyz2fract is
       end loop;   
    end Process_Options;
    
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
+   begin
+      Xyz_File.Put_Atoms ( Molecule, Unit_Cell, Unit_Cell_Given,
+                           Integer_Size, Fraction_Size, Exponent_Size );
+   end;
+   
    type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
        
    procedure Free_File is
       new Ada.Unchecked_Deallocation(File_Type, Access_File_Type);
-   
-   type Atom_Descriptor is
-      record
-         Atom_Type : String(1..2);
-         X, Y, Z : Long_Float;
-      end record;
-   
-   type Atom_Descriptor_Array
-      is array ( Integer range <> ) of Atom_Descriptor;
-   
-   type XYZ_File_Atoms (Size : Integer) is
-      record
-         Comment : Unbounded_String;
-         Atoms : Atom_Descriptor_Array (1..Size);
-      end record;
-   
-   function "*" ( M : Matrix3x3; A : Atom_Descriptor )
-                return Atom_Descriptor is
-      R : Atom_Descriptor;
-   begin
-      R.Atom_Type := A.Atom_Type;
-      R.X := A.X*M(1,1) + A.Y*M(1,2) + A.Z*M(1,3);
-      R.Y := A.X*M(2,1) + A.Y*M(2,2) + A.Z*M(2,3);
-      R.Z := A.X*M(3,1) + A.Y*M(3,2) + A.Z*M(3,3);
-      return R;
-   end;
-   
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
-   begin
-      Put (Molecule.Atoms'Last, 1); New_Line;
-      Put ( To_String (Molecule.Comment) );
-      
-      if Unit_Cell_Given then
-         Put (" CELL: ");
-         for I in Unit_Cell'Range loop
-            Put (Unit_Cell(I), 2, Fraction_Size, Exponent_Size);
-            Put (" ");
-         end loop;
-      end if;
-      
-      New_Line;
-
-      for I in Molecule.Atoms'Range loop
-         Put (Molecule.Atoms(I).Atom_Type);
-         Put (" ");
-         Put (Molecule.Atoms(I).X, Integer_Size, Fraction_Size, Exponent_Size);
-         Put (" ");
-         Put (Molecule.Atoms(I).Y, Integer_Size, Fraction_Size, Exponent_Size);
-         Put (" ");
-         Put (Molecule.Atoms(I).Z, Integer_Size, Fraction_Size, Exponent_Size);
-         New_Line;
-      end loop;
-   end;
    
    F4O : Matrix3x3;
    
