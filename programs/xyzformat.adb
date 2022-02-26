@@ -40,7 +40,12 @@ procedure XyzFormat is
          end case;
       end loop;   
    end Process_Options;
-      
+   
+   -- Format number for printing out floating point numbers:
+   Integer_Size : Integer := 15;
+   Fraction_Size : Integer := 14;
+   Exponent_Size : Integer := 3;
+   
    type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
        
@@ -71,11 +76,11 @@ procedure XyzFormat is
       for I in Molecule.Atoms'Range loop
          Put (Molecule.Atoms(I).Atom_Type);
          Put (" ");
-         Put (Molecule.Atoms(I).X, 15);
+         Put (Molecule.Atoms(I).X, Integer_Size, Fraction_Size, Exponent_Size);
          Put (" ");
-         Put (Molecule.Atoms(I).Y, 15);
+         Put (Molecule.Atoms(I).Y, Integer_Size, Fraction_Size, Exponent_Size);
          Put (" ");
-         Put (Molecule.Atoms(I).Z, 15);
+         Put (Molecule.Atoms(I).Z, Integer_Size, Fraction_Size, Exponent_Size);
          New_Line;
       end loop;
    end;
