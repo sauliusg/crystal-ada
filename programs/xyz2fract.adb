@@ -22,30 +22,15 @@ with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with GNAT.Command_Line;      use GNAT.Command_Line;
 
-with Ada.Numerics;
-with Ada.Numerics.Generic_Elementary_Functions;
+with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
+
 with Ada.Unchecked_Deallocation;
 
 procedure Xyz2fract is
    
-   package Long_Float_Elementary_Functions is 
-      new Ada.Numerics.Generic_Elementary_Functions (Long_Float);
-   
-   use Long_Float_Elementary_Functions;
-   
-   type Unit_Cell_Type is array (1..6) of Long_Float;
-   
    Unit_Cell : Unit_Cell_Type := (others => 0.0);
-   
+
    Unit_Cell_Given : Boolean := False;
-   
-   procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type ) is
-      Position : Integer := Line'First - 1;
-   begin
-      for I in Cell'Range loop
-         Get (Line(Position+1..Line'Last), Cell(I), Position);
-      end loop;
-   end;
    
    procedure Process_Options is
    begin
@@ -68,53 +53,6 @@ procedure Xyz2fract is
          end case;
       end loop;   
    end Process_Options;
-   
-   type Matrix3x3 is array (1..3,1..3) of Long_Float;
-   
-   function Matrix_Ortho_From_Fract ( Cell : Unit_Cell_Type ) 
-                                    return Matrix3x3
-   is
-      A : Long_Float := Cell(1);
-      B : Long_Float := Cell(2);
-      C : Long_Float := Cell(3);
-      Alpha : Long_Float := Cell(4) * Ada.Numerics.Pi / 180.0; -- in radians;
-      Beta  : Long_Float := Cell(5) * Ada.Numerics.Pi / 180.0;
-      Gamma : Long_Float := Cell(6) * Ada.Numerics.Pi / 180.0;
-      CA : Long_Float := Cos(Alpha);
-      CB : Long_Float := Cos(Beta);
-      CG : Long_Float := Cos(Gamma);
-      SG : Long_Float := Sin(Gamma);
-   begin
-      return ( 
-               (   A, B * CG, C * CB           ),
-               ( 0.0, B * SG, C * (CA - CB*CG) ), 
-               ( 0.0,    0.0, 
-                 C * Sqrt (SG*SG - CA*CA - CB*CB + 2.0*CA*CB*CG)/SG )
-             );
-   end;
-   
-   function Matrix_Fract_From_Ortho ( Cell : in Unit_Cell_Type ) 
-                                    return Matrix3x3
-   is
-      A : Long_Float := Cell(1);
-      B : Long_Float := Cell(2);
-      C : Long_Float := Cell(3);
-      Alpha : Long_Float := Cell(4) * Ada.Numerics.Pi / 180.0; -- in radians;
-      Beta  : Long_Float := Cell(5) * Ada.Numerics.Pi / 180.0;
-      Gamma : Long_Float := Cell(6) * Ada.Numerics.Pi / 180.0;
-      CA : Long_Float := Cos(Alpha);
-      CB : Long_Float := Cos(Beta);
-      CG : Long_Float := Cos(Gamma);
-      SG : Long_Float := Sin(Gamma);
-      CTG : Long_Float := CG/SG;
-      D : Long_Float := Sqrt(SG**2 - CB**2 - CA**2 + 2.0*CA*CB*CG);
-   begin
-      return ( 
-               ( 1.0/A, -(1.0/A)*CTG,     (CA*CG-CB)/(A*D) ),
-               (   0.0,   1.0/(B*SG), -(CA-CB*CG)/(B*SG*D) ), 
-               (   0.0,          0.0,             SG/(C*D) )
-             );
-   end;
    
    type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
