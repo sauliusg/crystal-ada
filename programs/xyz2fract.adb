@@ -23,6 +23,7 @@ with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with GNAT.Command_Line;      use GNAT.Command_Line;
 
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
+with Float_Format_Option;    use Float_Format_Option;
 
 with Ada.Unchecked_Deallocation;
 
@@ -33,9 +34,17 @@ procedure Xyz2fract is
    Unit_Cell_Given : Boolean := False;
    
    procedure Process_Options is
+      Help_Option : String := "-help -hel -he -h h ";
+      Cell_Option : String := "c: -cell= -cel= -ce= -c= ";
+      Float_Format_Option : String := "f: " &
+        "-float-format= -float-forma= -float-form= -float-for= " &
+        "-float-fo= -float-f= -float= -floa= -flo= -fl= -f= ";
    begin
       loop
-         case Getopt ("c: -cell= -cel= -ce= -c= -help -hel -he -h h") is
+         case Getopt (Help_Option & Cell_Option & Float_Format_Option) is
+            when 'f' =>
+               Parse_Float_Format (Parameter, Integer_Size, 
+                                   Fraction_Size, Exponent_Size);
             when 'c' =>
                -- Put_Line("Seen '-c' with parameter '" & Parameter & "'") ;
                Parse_Unit_Cell (Parameter, Unit_Cell);
@@ -45,6 +54,9 @@ procedure Xyz2fract is
                   -- Put_Line ("Seen --cell with arg='" & Parameter & "'");
                   Parse_Unit_Cell (Parameter, Unit_Cell);
                   Unit_Cell_Given := True;
+               elsif Index("-float-format", Full_Switch) = 1 then
+                  Parse_Float_Format (Parameter, Integer_Size, 
+                                      Fraction_Size, Exponent_Size);
                elsif Index("-help", Full_Switch) = 1 then
                   Put_Line ("Seen --help");
                end if;
@@ -94,7 +106,8 @@ procedure Xyz2fract is
       if Unit_Cell_Given then
          Put (" CELL: ");
          for I in Unit_Cell'Range loop
-            Put (Unit_Cell(I)); Put (" ");
+            Put (Unit_Cell(I), 2, Fraction_Size, Exponent_Size);
+            Put (" ");
          end loop;
       end if;
       
@@ -103,11 +116,11 @@ procedure Xyz2fract is
       for I in Molecule.Atoms'Range loop
          Put (Molecule.Atoms(I).Atom_Type);
          Put (" ");
-         Put (Molecule.Atoms(I).X, 15);
+         Put (Molecule.Atoms(I).X, Integer_Size, Fraction_Size, Exponent_Size);
          Put (" ");
-         Put (Molecule.Atoms(I).Y, 15);
+         Put (Molecule.Atoms(I).Y, Integer_Size, Fraction_Size, Exponent_Size);
          Put (" ");
-         Put (Molecule.Atoms(I).Z, 15);
+         Put (Molecule.Atoms(I).Z, Integer_Size, Fraction_Size, Exponent_Size);
          New_Line;
       end loop;
    end;
