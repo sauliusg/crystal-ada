@@ -49,9 +49,16 @@ procedure XyzFormat is
       end;
    begin
       Replace (Line_Without_Commas, ',', ' ');
-      Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last), Integer_Size, Position );
-      Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last), Fraction_Size, Position );
-      Get (Line_Without_Commas(POsition+1..Line_Without_Commas'Last), Exponent_Size, Position );
+      Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last),
+           Integer_Size, Position );
+      if Position < Line_Without_Commas'Last then
+         Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last),
+              Fraction_Size, Position );
+      end if;
+      if Position < Line_Without_Commas'Last then
+         Get (Line_Without_Commas(POsition+1..Line_Without_Commas'Last),
+              Exponent_Size, Position );
+      end if;
    end;
    
    procedure Process_Options is
