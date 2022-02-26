@@ -55,9 +55,9 @@ ${GNATMAKE_PRG_DIR}/.%.d: ${GNATMAKE_PRG_DIR}/%.adb
 
 gnatmake-clean gnatmake-mostlyclean:
 	rm -f ${GNATMAKE_OBJ_DIR}/*
-	rm -f ${GNATMAKE_ADA_DEPEND}
 
 gnatmake-distclean gnatmake-cleanAll: gnatmake-clean
+	rm -f ${GNATMAKE_ADA_DEPEND}
 	rm -f ${GNATMAKE_ADA_EXE}
 
 #------------------------------------------------------------------------------
