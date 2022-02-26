@@ -7,8 +7,7 @@
 
 -- Take an XYZ format molecular file
 --  (https://en.wikipedia.org/wiki/XYZ_file_format) print it out using
---  Ada format. Unit cell constants can be given as command line
---  option parameters.
+--  Ada format
 
 -- Option processing example taken from:
 -- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
@@ -26,41 +25,14 @@ with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Unchecked_Deallocation;
 
-procedure Xyz2fract is
-   
-   package Long_Float_Elementary_Functions is 
-      new Ada.Numerics.Generic_Elementary_Functions (Long_Float);
-   
-   use Long_Float_Elementary_Functions;
-   
-   type Unit_Cell_Type is array (1..6) of Long_Float;
-   
-   Unit_Cell : Unit_Cell_Type := (others => 0.0);
-   
-   Unit_Cell_Given : Boolean := False;
-   
-   procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type ) is
-      Position : Integer := Line'First - 1;
-   begin
-      for I in Cell'Range loop
-         Get (Line(Position+1..Line'Last), Cell(I), Position);
-      end loop;
-   end;
+procedure XyzFormat is
    
    procedure Process_Options is
    begin
       loop
-         case Getopt ("c: -cell= -cel= -ce= -c= -help -hel -he -h h") is
-            when 'c' =>
-               -- Put_Line("Seen '-c' with parameter '" & Parameter & "'") ;
-               Parse_Unit_Cell (Parameter, Unit_Cell);
-               Unit_Cell_Given := True;
+         case Getopt ("-help -hel -he -h h") is
             when '-' =>
-               if Index("-cell", Full_Switch) = 1 then
-                  -- Put_Line ("Seen --cell with arg='" & Parameter & "'");
-                  Parse_Unit_Cell (Parameter, Unit_Cell);
-                  Unit_Cell_Given := True;
-               elsif Index("-help", Full_Switch) = 1 then
+               if Index("-help", Full_Switch) = 1 then
                   Put_Line ("Seen --help");
                end if;
             when others =>
@@ -94,14 +66,6 @@ procedure Xyz2fract is
    begin
       Put (Molecule.Atoms'Last, 1); New_Line;
       Put ( To_String (Molecule.Comment) );
-      
-      if Unit_Cell_Given then
-         Put (" CELL: ");
-         for I in Unit_Cell'Range loop
-            Put (Unit_Cell(I)); Put (" ");
-         end loop;
-      end if;
-      
       New_Line;
 
       for I in Molecule.Atoms'Range loop
@@ -172,4 +136,4 @@ begin
       
    end;
 
-end Xyz2fract;
+end XyzFormat;
