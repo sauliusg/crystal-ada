@@ -2,6 +2,8 @@ with Ada.Long_Float_Text_IO; use Ada.Long_Float_Text_IO;
 with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 
+with String_Functions;
+
 package body Crystal_Unit_Cell is
    
    package Long_Float_Elementary_Functions is 
@@ -9,11 +11,16 @@ package body Crystal_Unit_Cell is
    
    use Long_Float_Elementary_Functions;
    
+   procedure Replace (S : in out String; Chr_From, Chr_To : Character)
+     renames String_Functions.Replace;
+   
    procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type ) is
       Position : Integer := Line'First - 1;
+      Line_Without_Commas : String := Line;
    begin
+      Replace (Line_Without_Commas, ',', ' ');
       for I in Cell'Range loop
-         Get (Line(Position+1..Line'Last), Cell(I), Position);
+         Get (Line_Without_Commas(Position+1..Line'Last), Cell(I), Position);
       end loop;
    end;
    
