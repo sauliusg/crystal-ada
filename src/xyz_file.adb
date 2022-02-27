@@ -68,13 +68,23 @@ package body Xyz_File is
    begin
       XYZ_Atoms.Comment := To_Unbounded_String (Comment);
       for I in 1..N loop
-         Get (File, XYZ_Atoms.Atoms(I).Atom_Type);
-         Get (File, XYZ_Atoms.Atoms(I).X, Width => 0);
-         Get (File, XYZ_Atoms.Atoms(I).Y, Width => 0);
-         Get (File, XYZ_Atoms.Atoms(I).Z, Width => 0);
+         declare
+            Line : String := Get_Line (File);
+            Position : Integer := Line'First;
+         begin
+            if Line(2) = ' ' then
+               XYZ_Atoms.Atoms(I).Atom_Type(1) := Line(1);
+               XYZ_Atoms.Atoms(I).Atom_Type(2) := ' ';
+               Position := Line'First;
+            else
+               XYZ_Atoms.Atoms(I).Atom_Type := Line(1..2);
+               Position := Line'First + 1;
+            end if;
+            Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).X, Position);
+            Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).Y, Position);
+            Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).Z, Position);
+         end;
       end loop;
-      -- Read the remaining EOL marker:
-      Skip_Line (File);
       return XYZ_Atoms;
    end;
    
