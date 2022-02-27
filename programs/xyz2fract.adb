@@ -25,8 +25,7 @@ with GNAT.Command_Line;      use GNAT.Command_Line;
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
-  
-with Ada.Unchecked_Deallocation;
+with File_Selector;          use File_Selector;
 
 procedure Xyz2fract is
    
@@ -73,12 +72,8 @@ procedure Xyz2fract is
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
-   type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
-       
-   procedure Free_File is
-      new Ada.Unchecked_Deallocation(File_Type, Access_File_Type);
-   
+
    F4O : Matrix3x3;
    
 begin
@@ -89,28 +84,16 @@ begin
    
    declare
       File_Name : Unbounded_String;
-      File_Processed : Boolean := False;   
+      Is_File_Processed : Boolean := False;
+      Is_Last_File: Boolean;
    begin
       loop
          File_Name := To_Unbounded_String(Get_Argument);
-         -- Put_Line ("Current file name: '" & To_String(File_Name) & "'");
-         if File_Name = To_Unbounded_String ("") then
-            if not File_Processed then
-               File_Name := To_Unbounded_String ("-");
-               Current_File := new File_Type'(Standard_Input);
-            else
-               exit;
-            end if;
-         else
-            if File_Name = To_Unbounded_String ("-") then
-               Current_File := new File_Type'(Standard_Input);
-            else 
-               Current_File := new File_Type;
-               Open (Current_File.all, In_File, To_String(File_Name));
-            end if;
-         end if;
-         File_Processed := True;
-         
+         Select_File (File_Name, Is_File_Processed => Is_File_Processed,
+                      Is_Last_File => Is_Last_File,
+                      Current_File => Current_File);
+         exit when Is_Last_File;
+
          while not End_Of_File (Current_File.all) loop
             declare
                N : Integer := Integer'Value (Get_Line (Current_File.all));
