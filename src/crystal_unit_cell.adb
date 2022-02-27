@@ -64,9 +64,9 @@ package body Crystal_Unit_Cell is
       D : Long_Float := Sqrt(SG**2 - CB**2 - CA**2 + 2.0*CA*CB*CG);
    begin
       return ( 
-               ( 1.0/A, -(1.0/A)*CTG,     (CA*CG-CB)/(A*D) ),
-               (   0.0,   1.0/(B*SG), -(CA-CB*CG)/(B*SG*D) ), 
-               (   0.0,          0.0,             SG/(C*D) )
+               ( 1.0/A, -(1.0/A)*CTG, (CA*CG-CB)/(A*SG*D) ),
+               (   0.0,   1.0/(B*SG), (CB*CG-CA)/(B*SG*D) ), 
+               (   0.0,          0.0,            SG/(C*D) )
              );
    end;
    
