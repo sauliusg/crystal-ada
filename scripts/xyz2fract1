@@ -58,18 +58,20 @@ while(<>) {
         ($a->[1],$a->[2],$a->[3]) = ($x,$y,$z);
     }
 
-    print_atoms( \@atoms, $comment );
+    print_atoms( \@atoms, $comment, \@cell );
 }
 
 sub print_atoms
 {
-    my ($atoms, $comment) = @_;
+    my ($atoms, $comment, $cell) = @_;
 
-    local $, = " ";
-    local $\ = "\n";
-
-    print int(@$atoms);
+    print int(@$atoms), "\n";
     print $comment;
+    if( $cell ) {
+        local $, = " ";
+        print " CELL:", @{cell};
+    }
+    print "\n";
 
     for my $atom (@$atoms) {
         printf "%-8s $float_format $float_format $float_format\n", @$atom;
