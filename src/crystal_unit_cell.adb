@@ -40,10 +40,10 @@ package body Crystal_Unit_Cell is
       SG : Long_Float := Sin(Gamma);
    begin
       return ( 
-               (   A, B * CG, C * CB           ),
-               ( 0.0, B * SG, C * (CA - CB*CG) ), 
+               (   A, B * CG, C * CB                ),
+               ( 0.0, B * SG, C * (CA - CB*CG) / SG ), 
                ( 0.0,    0.0, 
-                 C * Sqrt (SG*SG - CA*CA - CB*CB + 2.0*CA*CB*CG)/SG )
+                 C * Sqrt (SG*SG - CA*CA - CB*CB + 2.0*CA*CB*CG)/SG)
              );
    end;
    

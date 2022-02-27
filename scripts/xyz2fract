@@ -1,0 +1,82 @@
+#! /bin/sh
+#!perl -w # --*- Perl -*--
+eval 'exec perl -x $0 ${1+"$@"}'
+    if 0;
+#------------------------------------------------------------------------------
+#$Author$
+#$Date$ 
+#$Revision$
+#$URL$
+#------------------------------------------------------------------------------
+#*
+# Take an XYZ format molecular file
+# (https://en.wikipedia.org/wiki/XYZ_file_format) and convert
+# orthogonal coordinates to fractional ones. Unit cell constants can
+# be given as command line option parameters.
+#**
+
+use strict;
+use warnings;
+
+use COD::Fractional qw(symop_fract_from_ortho);
+
+use COD::SOptions qw( getOptions get_value );
+use COD::SUsage qw( usage options );
+
+my $cell;
+
+my $float_format = "%15.6f";
+
+@ARGV = getOptions(
+    '-c,--cell'         => \$cell,
+    '-f,--float-format' => \$float_format,
+    '--options'         => sub { options; exit },
+    '--help,--usage'    => sub { usage; exit },
+);
+
+my @cell = ();
+
+if( $cell ) {
+    $cell =~ s/,/ /g;
+    @cell = split( ' ', $cell );
+}
+
+my $f4o = $cell ?
+    symop_fract_from_ortho( @cell ) : [[1,0,0],[0,1,0],[0,0,1]];
+
+while(<>) {
+    my $N = $_;
+    my $comment = <>;
+
+    chomp($comment);
+
+    my @atoms;
+    for my $i (0..$N-1) {
+        push( @atoms, [split(" ", <>)] );
+    }
+
+    for my $a (@atoms) {
+        my ($x, $y, $z);
+        $x = $f4o->[0][0] * $a->[1] + $f4o->[0][1] * $a->[2] + $f4o->[0][2] * $a->[3];
+        $y = $f4o->[1][0] * $a->[1] + $f4o->[1][1] * $a->[2] + $f4o->[1][2] * $a->[3];
+        $z = $f4o->[2][0] * $a->[1] + $f4o->[2][1] * $a->[2] + $f4o->[2][2] * $a->[3];
+        ($a->[1],$a->[2],$a->[3]) = ($x,$y,$z);
+    }
+
+    print_atoms( \@atoms, $comment );
+}
+
+sub print_atoms
+{
+    my ($atoms, $comment) = @_;
+
+    local $, = " ";
+    local $\ = "\n";
+
+    print int(@$atoms);
+    print $comment;
+
+    for my $atom (@$atoms) {
+        printf "%-8s $float_format $float_format $float_format\n", @$atom;
+    }
+}
