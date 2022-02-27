@@ -4,9 +4,6 @@ with String_Functions;
 
 package body Float_Format_Option is
    
-   procedure Replace (S : in out String; Chr_From, Chr_To : Character)
-     renames String_Functions.Replace;
-   
    procedure Parse_Float_Format ( Line : String;
                                   Integer_Size : in out Integer;
                                   Fraction_Size : in out Integer;
@@ -14,6 +11,10 @@ package body Float_Format_Option is
                                 ) is
       Line_Without_Commas : String := Line;
       Position : Integer := Line_Without_Commas'First - 1;
+      
+      procedure Replace (S : in out String; Chr_From, Chr_To : Character)
+        renames String_Functions.Replace;
+      
    begin
       Replace (Line_Without_Commas, ',', ' ');
       Get (Line_Without_Commas(Position+1..Line_Without_Commas'Last),
