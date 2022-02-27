@@ -26,6 +26,8 @@ with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Unchecked_Deallocation;
 
 with Float_Format_Option;    use Float_Format_Option;
+with Xyz_File;               use Xyz_File;
+with File_Selector;          use File_Selector;
 
 procedure XyzFormat is
    
@@ -53,44 +55,10 @@ procedure XyzFormat is
       end loop;   
    end Process_Options;
    
-   type Access_File_Type is access File_Type;
    Current_File : Access_File_Type;
        
    procedure Free_File is
       new Ada.Unchecked_Deallocation(File_Type, Access_File_Type);
-   
-   type Atom_Descriptor is
-      record
-         Atom_Type : String(1..2);
-         X, Y, Z : Long_Float;
-      end record;
-   
-   type Atom_Descriptor_Array
-      is array ( Integer range <> ) of Atom_Descriptor;
-   
-   type XYZ_File_Atoms (Size : Integer) is
-      record
-         Comment : Unbounded_String;
-         Atoms : Atom_Descriptor_Array (1..Size);
-      end record;
-   
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
-   begin
-      Put (Molecule.Atoms'Last, 1); New_Line;
-      Put ( To_String (Molecule.Comment) );
-      New_Line;
-
-      for I in Molecule.Atoms'Range loop
-         Put (Molecule.Atoms(I).Atom_Type);
-         Put (" ");
-         Put (Molecule.Atoms(I).X, Integer_Size, Fraction_Size, Exponent_Size);
-         Put (" ");
-         Put (Molecule.Atoms(I).Y, Integer_Size, Fraction_Size, Exponent_Size);
-         Put (" ");
-         Put (Molecule.Atoms(I).Z, Integer_Size, Fraction_Size, Exponent_Size);
-         New_Line;
-      end loop;
-   end;
    
 begin
    
@@ -98,44 +66,22 @@ begin
    
    declare
       File_Name : Unbounded_String;
-      File_Processed : Boolean := False;   
+      Is_File_Processed : Boolean := False;   
+      Is_Last_File : Boolean := False;   
    begin
       loop
          File_Name := To_Unbounded_String(Get_Argument);
-         -- Put_Line ("Current file name: '" & To_String(File_Name) & "'");
-         if File_Name = To_Unbounded_String ("") then
-            if not File_Processed then
-               File_Name := To_Unbounded_String ("-");
-               Current_File := new File_Type'(Standard_Input);
-            else
-               exit;
-            end if;
-         else
-            if File_Name = To_Unbounded_String ("-") then
-               Current_File := new File_Type'(Standard_Input);
-            else 
-               Current_File := new File_Type;
-               Open (Current_File.all, In_File, To_String(File_Name));
-            end if;
-         end if;
-         File_Processed := True;
+         Select_File (File_Name, Is_File_Processed => Is_File_Processed,
+                      Is_Last_File => Is_Last_File,
+                      Current_File => Current_File);
+         exit when Is_Last_File;
          
          while not End_Of_File (Current_File.all) loop
             declare
-               N : Integer := Integer'Value (Get_Line (Current_File.all));
-               Comment : String := Get_Line (Current_File.all);
-               XYZ_Atoms : XYZ_File_Atoms (N);
+               XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
             begin
-               XYZ_Atoms.Comment := To_Unbounded_String (Comment);
-               for I in 1..N loop
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Atom_Type);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).X, Width => 0);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Y, Width => 0);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Z, Width => 0);
-               end loop;
-               -- Read the remaining EOL marker:
-               Skip_Line (Current_File.all);
-               Put_Atoms (XYZ_Atoms);
+               Xyz_File.Put_Atoms ( XYZ_Atoms, Integer_Size,
+                                    Fraction_Size, Exponent_Size );
             end;
          end loop;
          

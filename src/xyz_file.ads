@@ -1,3 +1,4 @@
+with Text_Io;                use Text_Io;
 with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 
@@ -27,4 +28,10 @@ package Xyz_File is
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer );
    
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Integer_Size, Fraction_Size, 
+                           Exponent_Size : Integer );
+   
+   function Load_Atoms( File : in File_Type ) return XYZ_File_Atoms;
+
 end Xyz_File;

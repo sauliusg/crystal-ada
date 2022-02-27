@@ -46,5 +46,36 @@ package body Xyz_File is
          New_Line;
       end loop;
    end;
-
+   
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Integer_Size, Fraction_Size, 
+                           Exponent_Size : Integer ) is
+      
+      Dummy : Unit_Cell_Type := (others => 0.0);
+   begin
+      Put_Atoms ( Molecule,
+                  Unit_Cell => Dummy,
+                  Unit_Cell_Given => False,
+                  Integer_Size => Integer_size,
+                  Fraction_Size => Fraction_Size,
+                  Exponent_Size => Exponent_Size );
+   end;
+   
+   function Load_Atoms( File : in File_Type ) return XYZ_File_Atoms is
+      N : Integer := Integer'Value (Get_Line (File));
+      Comment : String := Get_Line (File);
+      XYZ_Atoms : XYZ_File_Atoms (N);
+   begin
+      XYZ_Atoms.Comment := To_Unbounded_String (Comment);
+      for I in 1..N loop
+         Get (File, XYZ_Atoms.Atoms(I).Atom_Type);
+         Get (File, XYZ_Atoms.Atoms(I).X, Width => 0);
+         Get (File, XYZ_Atoms.Atoms(I).Y, Width => 0);
+         Get (File, XYZ_Atoms.Atoms(I).Z, Width => 0);
+      end loop;
+      -- Read the remaining EOL marker:
+      Skip_Line (File);
+      return XYZ_Atoms;
+   end;
+   
 end Xyz_File;

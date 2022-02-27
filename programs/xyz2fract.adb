@@ -96,20 +96,8 @@ begin
 
          while not End_Of_File (Current_File.all) loop
             declare
-               N : Integer := Integer'Value (Get_Line (Current_File.all));
-               Comment : String := Get_Line (Current_File.all);
-               XYZ_Atoms : XYZ_File_Atoms (N);
+               XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
             begin
-               XYZ_Atoms.Comment := To_Unbounded_String (Comment);
-               for I in 1..N loop
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Atom_Type);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).X, Width => 0);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Y, Width => 0);
-                  Get (Current_File.all, XYZ_Atoms.Atoms(I).Z, Width => 0);
-               end loop;
-               -- Read the remaining EOL marker:
-               Skip_Line (Current_File.all);
-               
                for I in XYZ_Atoms.Atoms'Range loop
                   XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
                end loop;
