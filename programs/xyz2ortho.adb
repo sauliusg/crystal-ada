@@ -84,9 +84,9 @@ procedure Xyz2ortho is
       end loop;   
    end Process_Options;
    
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms; Lattice : Matrix3x3 ) is
    begin
-      Xyz_File.Put_Atoms ( Molecule, Unit_Cell, Unit_Cell_Given,
+      Xyz_File.Put_Atoms ( Molecule, Lattice, Unit_Cell_Given,
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
@@ -120,7 +120,7 @@ begin
                   XYZ_Atoms.Atoms(I) := O4F * XYZ_Atoms.Atoms(I);
                end loop;
                
-               Put_Atoms (XYZ_Atoms);
+               Put_Atoms (XYZ_Atoms, O4F);
             end;
          end loop;
          

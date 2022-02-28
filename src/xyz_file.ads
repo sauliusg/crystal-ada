@@ -29,6 +29,12 @@ package Xyz_File is
                            Exponent_Size : Integer );
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Lattice : Matrix3x3;
+                         Unit_Cell_Given : Boolean;
+                         Integer_Size, Fraction_Size, 
+                           Exponent_Size : Integer );
+   
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer );
    

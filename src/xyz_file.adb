@@ -16,15 +16,10 @@ package body Xyz_File is
       return R;
    end;
    
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
-                         Unit_Cell : Unit_Cell_Type;
-                         Unit_Cell_Given : Boolean;
-                         Integer_Size, Fraction_Size, 
-                           Exponent_Size : Integer ) is
+   procedure Put_Non_Cell_Comment (Molecule : XYZ_File_Atoms;
+                                   Unit_Cell_Given : Boolean) is
       Cell_Index : Integer;
    begin
-      Put (Molecule.Atoms'Last, 1); New_Line;
-      
       Cell_Index := Index (Molecule.Comment, " CELL:");
       if Cell_Index > 0 and Unit_Cell_Given then
          if Cell_Index > 1 then
@@ -36,17 +31,71 @@ package body Xyz_File is
       else
          Put (To_String (Molecule.Comment));
       end if;
-      
-      if Unit_Cell_Given then
-         Put (" CELL: ");
-         for I in Unit_Cell'Range loop
-            Put (Unit_Cell(I), 2, Fraction_Size, Exponent_Size);
+   end;
+   
+   procedure Put_Cell_keyword (Molecule : XYZ_File_Atoms; 
+                               Unit_Cell : Unit_Cell_Type;
+                               Integer_Size, Fraction_Size,
+                                 Exponent_Size : Integer) is
+   begin
+      Put (" CELL: ");
+      for I in Unit_Cell'Range loop
+         Put (Unit_Cell(I), 2, Fraction_Size, Exponent_Size);
+         Put (" ");
+      end loop;
+   end;
+   
+   procedure Put_Lattice_keyword (Molecule : XYZ_File_Atoms; 
+                                  Lattice : Matrix3x3;
+                                  Integer_Size, Fraction_Size,
+                                    Exponent_Size : Integer) is
+   begin
+      Put (" LATTICE: ");
+      for J in Lattice'Range(2) loop
+         for I in Lattice'Range(1) loop
+            Put (Lattice(I,J), 2, Fraction_Size, Exponent_Size);
             Put (" ");
          end loop;
-      end if;
+      end loop;
+   end;
+   
+   procedure Put_Atom_Comment ( Molecule : XYZ_File_Atoms;
+                                Unit_Cell : Unit_Cell_Type;
+                                Unit_Cell_Given : Boolean;
+                                Integer_Size, Fraction_Size, 
+                                  Exponent_Size : Integer ) is
+   begin
+      Put_Non_Cell_Comment (Molecule, Unit_Cell_Given);
       
-      New_Line;
-
+      if Unit_Cell_Given then
+         Put_Cell_Keyword (Molecule, Unit_Cell,
+                           Integer_Size => Integer_Size,
+                           Fraction_Size => Fraction_Size,
+                           Exponent_Size => Exponent_Size);
+      end if;
+   end Put_Atom_Comment;
+   
+   procedure Put_Atom_Comment ( Molecule : XYZ_File_Atoms;
+                                Lattice : Matrix3x3;
+                                Unit_Cell_Given : Boolean;
+                                Integer_Size, Fraction_Size, 
+                                  Exponent_Size : Integer ) is
+   begin
+      Put_Non_Cell_Comment (Molecule, Unit_Cell_Given);
+      
+      if Unit_Cell_Given then
+         Put_Lattice_Keyword (Molecule, Lattice,
+                              Integer_Size => Integer_Size,
+                              Fraction_Size => Fraction_Size,
+                              Exponent_Size => Exponent_Size);
+      end if;
+   end Put_Atom_Comment;
+   
+   procedure Put_Atom_Coordinates (Molecule : XYZ_File_Atoms;
+                                   Integer_Size, 
+                                     Fraction_Size, 
+                                     Exponent_Size : Integer) is
+   begin
       for I in Molecule.Atoms'Range loop
          Put (Molecule.Atoms(I).Atom_Type);
          Put (" ");
@@ -57,6 +106,48 @@ package body Xyz_File is
          Put (Molecule.Atoms(I).Z, Integer_Size, Fraction_Size, Exponent_Size);
          New_Line;
       end loop;
+   end;
+   
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Unit_Cell : Unit_Cell_Type;
+                         Unit_Cell_Given : Boolean;
+                         Integer_Size, Fraction_Size, 
+                           Exponent_Size : Integer ) is
+   begin
+      Put (Molecule.Atoms'Last, 1);
+      New_Line;
+      Put_Atom_Comment (Molecule, Unit_Cell, Unit_Cell_Given,
+                        Integer_Size => Integer_Size,
+                        Fraction_Size => Fraction_Size,
+                        Exponent_Size => Exponent_Size
+                       );
+      New_Line;
+      Put_Atom_Coordinates (Molecule, 
+                            Integer_Size => Integer_Size,
+                            Fraction_Size => Fraction_Size,
+                            Exponent_Size => Exponent_Size
+                           );
+   end;
+   
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Lattice : Matrix3x3;
+                         Unit_Cell_Given : Boolean;
+                         Integer_Size, Fraction_Size, 
+                           Exponent_Size : Integer ) is
+   begin
+      Put (Molecule.Atoms'Last, 1);
+      New_Line;
+      Put_Atom_Comment (Molecule, Lattice, Unit_Cell_Given,
+                        Integer_Size => Integer_Size,
+                        Fraction_Size => Fraction_Size,
+                        Exponent_Size => Exponent_Size
+                       );
+      New_Line;
+      Put_Atom_Coordinates (Molecule, 
+                            Integer_Size => Integer_Size,
+                            Fraction_Size => Fraction_Size,
+                            Exponent_Size => Exponent_Size
+                           );
    end;
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;

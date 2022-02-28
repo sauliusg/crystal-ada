@@ -25,6 +25,23 @@ package body Crystal_Unit_Cell is
       end loop;
    end;
    
+   procedure Parse_Lattice ( Line : String; Lattice : in out Matrix3x3 ) is
+      Position : Integer := Line'First - 1;
+      Line_Without_Commas : String := Line;
+      
+      procedure Replace (S : in out String; Chr_From, Chr_To : Character)
+        renames String_Functions.Replace;
+   
+   begin
+      Replace (Line_Without_Commas, ',', ' ');
+      for J in Lattice'Range(2) loop
+         for I in Lattice'Range(1) loop
+            Get (Line_Without_Commas(Position+1..Line'Last), 
+                 Lattice(I,J), Position);
+         end loop;
+      end loop;
+   end;
+   
    function Matrix_Ortho_From_Fract ( Cell : Unit_Cell_Type ) 
                                     return Matrix3x3
    is
