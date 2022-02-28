@@ -38,7 +38,6 @@ procedure Xyz2ortho is
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
-      -- procedure N renames New_Line;
    begin
       P("Read an XYZ format file (https://en.wikipedia.org/wiki/XYZ_file_format) from");
       P("input files or from STDIN (file name ""-"" as an argument refers to STDIN)");
