@@ -42,10 +42,11 @@ ${GNATMAKE_BIN_DIR}/%: ${GNATMAKE_PRG_DIR}/%.adb
 		-D ${GNATMAKE_OBJ_DIR} \
 		-o $@ $< \
 		${GNATMAKE_OPTIONS}
+	${MAKE} -W $< ${GNATMAKE_PRG_DIR}/.$*.d
 
 ${GNATMAKE_PRG_DIR}/.%.d: ${GNATMAKE_PRG_DIR}/%.adb
 	gnatmake -I${GNATMAKE_SRC_DIR} -D ${GNATMAKE_OBJ_DIR} -M $< \
-	| sed 's/^\(.*\)\.o :/${GNATMAKE_BIN_DIR}\/\1 :/' \
+	| sed 's/^\(.*\.o\) :/${GNATMAKE_BIN_DIR}\/$* :/' \
 	| sed 's:${CWD}/::' \
 	> $@
 
