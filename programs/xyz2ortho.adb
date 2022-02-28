@@ -67,12 +67,10 @@ procedure Xyz2ortho is
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
             when 'c' =>
-               -- Put_Line("Seen '-c' with parameter '" & Parameter & "'") ;
                Parse_Unit_Cell (Parameter, Unit_Cell);
                Unit_Cell_Given := True;
             when '-' =>
                if Index("-cell", Full_Switch) = 1 then
-                  -- Put_Line ("Seen --cell with arg='" & Parameter & "'");
                   Parse_Unit_Cell (Parameter, Unit_Cell);
                   Unit_Cell_Given := True;
                elsif Index("-float-format", Full_Switch) = 1 then
