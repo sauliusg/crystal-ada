@@ -5,11 +5,6 @@
 -- $URL$
 -- ----------------------------------------------------------------------------
 
--- Take an XYZ format molecular file
---  (https://en.wikipedia.org/wiki/XYZ_file_format) and convert
---  orthogonal coordinates to fractional ones. Unit cell constants can
---  be given as command line option parameters.
-
 -- Option processing example taken from:
 -- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
 -- S.G. 2021-12-26
@@ -33,6 +28,31 @@ procedure Xyz2fract is
 
    Unit_Cell_Given : Boolean := False;
    
+   HELP_PRINTED : exception ;
+   
+   procedure Print_Help is
+      procedure P( S : String ) renames Put_Line;
+   begin
+      P("Take an XYZ format molecular file");
+      P("(https://en.wikipedia.org/wiki/XYZ_file_format) and convert");
+      P("orthogonal coordinates to fractional ones. Unit cell constants can");
+      P("be given as command line option parameters.");
+      New_Line;
+      P("USAGE:");
+      P("    " & Command_Name & " --options inputs*.xyz");
+      P("    " & Command_Name & " --options < inp.xyz");
+      New_Line;
+      P("OPTIONS:");
+      P("    -c, --cell ""10 10 10 90 90 90""  Specify unit cell for conversion");
+      P("    -f, --float-format 15,12,3      Specify format for floating point output");
+      P("        For Ada, floating point format consists of three numbers:");
+      P("        the integer part length, the fraction part length and the exponent length.");
+      P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");
+      New_Line;
+      P("    --help                          Print a short help message and exit;");
+      raise HELP_PRINTED;
+   end;
+   
    procedure Process_Options is
       Help_Option : String := "-help -hel -he -h h ";
       Cell_Option : String := "c: -cell= -cel= -ce= -c= ";
@@ -46,19 +66,17 @@ procedure Xyz2fract is
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
             when 'c' =>
-               -- Put_Line("Seen '-c' with parameter '" & Parameter & "'") ;
                Parse_Unit_Cell (Parameter, Unit_Cell);
                Unit_Cell_Given := True;
             when '-' =>
                if Index("-cell", Full_Switch) = 1 then
-                  -- Put_Line ("Seen --cell with arg='" & Parameter & "'");
                   Parse_Unit_Cell (Parameter, Unit_Cell);
                   Unit_Cell_Given := True;
                elsif Index("-float-format", Full_Switch) = 1 then
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
                elsif Index("-help", Full_Switch) = 1 then
-                  Put_Line ("Seen --help");
+                  Print_Help;
                end if;
             when others =>
                exit;
@@ -114,5 +132,8 @@ begin
       end loop;
       
    end;
-
+   
+exception
+   when HELP_PRINTED => null;
+   
 end Xyz2fract;

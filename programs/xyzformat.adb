@@ -5,10 +5,6 @@
 -- $URL$
 -- ----------------------------------------------------------------------------
 
--- Take an XYZ format molecular file
---  (https://en.wikipedia.org/wiki/XYZ_file_format) print it out using
---  Ada format
-
 -- Option processing example taken from:
 -- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
 -- S.G. 2021-12-26
@@ -31,6 +27,28 @@ with File_Selector;          use File_Selector;
 
 procedure XyzFormat is
    
+   HELP_PRINTED : exception;
+   
+   procedure Print_Help is
+      procedure P( S : String ) renames Put_Line;
+   begin
+      P("Take an XYZ format molecular file (https://en.wikipedia.org/wiki/XYZ_file_format)");
+      P("and print it out using Ada format");
+      New_Line;
+      P("USAGE:");
+      P("    " & Command_Name & " --options inputs*.xyz");
+      P("    " & Command_Name & " --options < inp.xyz");
+      New_Line;
+      P("OPTIONS:");
+      P("    -f, --float-format 15,12,3      Specify format for floating point output");
+      P("        For Ada, floating point format consists of three numbers:");
+      P("        the integer part length, the fraction part length and the exponent length.");
+      P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");
+      New_Line;
+      P("    --help                          Print a short help message and exit;");
+      raise HELP_PRINTED;
+   end;
+   
    procedure Process_Options is
       Help_Option : String := "-help -hel -he -h h";
       Float_Format_Option : String := "f: " &
@@ -44,7 +62,7 @@ procedure XyzFormat is
                                    Fraction_Size, Exponent_Size);
             when '-' =>
                if Index("-help", Full_Switch) = 1 then
-                  Put_Line ("Seen --help");
+                  Print_Help;
                elsif Index("-float-format", Full_Switch) = 1 then
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
@@ -93,5 +111,8 @@ begin
       end loop;
       
    end;
-
+   
+exception
+   when HELP_PRINTED => null;
+   
 end XyzFormat;
