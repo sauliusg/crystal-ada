@@ -21,9 +21,21 @@ package body Xyz_File is
                          Unit_Cell_Given : Boolean;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer ) is
+      Cell_Index : Integer;
    begin
       Put (Molecule.Atoms'Last, 1); New_Line;
-      Put (To_String (Molecule.Comment));
+      
+      Cell_Index := Index (Molecule.Comment, " CELL:");
+      if Cell_Index > 0 and Unit_Cell_Given then
+         if Cell_Index > 1 then
+            Put (To_String (Molecule.Comment)(1..Cell_Index-1));
+         else
+            null; -- do not print anything of we only have " CELL:" 
+                  -- on the comment line.
+         end if;
+      else
+         Put (To_String (Molecule.Comment));
+      end if;
       
       if Unit_Cell_Given then
          Put (" CELL: ");
