@@ -120,6 +120,18 @@ begin
             declare
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
             begin
+               if not Unit_Cell_Given then
+                  declare
+                     Lattice_Keyword : String := "LATTICE:";
+                     Comment : String := To_String (XYZ_Atoms.Comment);
+                     Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
+                     Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
+                  begin
+                     Parse_Lattice (Comment(Parse_Start..Comment'Last), F4O);
+                     F4O := Invert (F4O);
+                  end;
+               end if;
+               
                for I in XYZ_Atoms.Atoms'Range loop
                   XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
                end loop;
