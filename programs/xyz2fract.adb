@@ -24,6 +24,8 @@ with File_Selector;          use File_Selector;
 
 procedure Xyz2fract is
    
+   F4O : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
+   
    Unit_Cell : Unit_Cell_Type := (others => 0.0);
 
    Unit_Cell_Given : Boolean := False;
@@ -72,10 +74,12 @@ procedure Xyz2fract is
             when 'c' =>
                Parse_Unit_Cell (Parameter, Unit_Cell);
                Unit_Cell_Given := True;
+               F4O := Matrix_Fract_From_Ortho (Unit_Cell);
             when '-' =>
                if Index("-cell", Full_Switch) = 1 then
                   Parse_Unit_Cell (Parameter, Unit_Cell);
                   Unit_Cell_Given := True;
+                  F4O := Matrix_Fract_From_Ortho (Unit_Cell);
                elsif Index("-float-format", Full_Switch) = 1 then
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
@@ -96,13 +100,9 @@ procedure Xyz2fract is
    
    Current_File : Access_File_Type;
 
-   F4O : Matrix3x3;
-   
 begin
    
    Process_Options;
-   
-   F4O := Matrix_Fract_From_Ortho (Unit_Cell);
    
    declare
       File_Name : Unbounded_String;
