@@ -7,8 +7,9 @@
 
 -- Take an XYZ format molecular file
 --  (https://en.wikipedia.org/wiki/XYZ_file_format) and convert
---  orthogonal coordinates to fractional ones. Unit cell constants can
---  be given as command line option parameters.
+--  coordinates to orthogonal ones, assuming that the file contained
+--  fractional coordinates. Unit cell constants can be given as
+--  command line option parameters.
 
 -- Option processing example taken from:
 -- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
@@ -33,8 +34,29 @@ procedure Xyz2ortho is
 
    Unit_Cell_Given : Boolean := False;
    
+   HELP_PRINTED : exception ;
+   
+   procedure Print_Help is
+      procedure P( S : String ) renames Put_Line;
+      -- procedure N renames New_Line;
+   begin
+      P("Read an XYZ format file (https://en.wikipedia.org/wiki/XYZ_file_format) from");
+      P("input files or from STDIN (file name ""-"" as an argument refers to STDIN)");
+      P("and convert coordinates to orthogonal ones, assuming that the file contained");
+      P("fractional coordinates.");
+      New_Line;
+      P("USAGE:");
+      P("    " & Command_Name & " --options inputs*.xyz");
+      P("    " & Command_Name & " --options < inp.xyz");
+      New_Line;
+      P("OPTIONS:");
+      P("    -c, --cell ""10 10 10 90 90 90""  Specify unit cell for conversion");
+      P("    --help                          Print a short help message and exit;");
+      raise HELP_PRINTED;
+   end;
+   
    procedure Process_Options is
-      Help_Option : String := "-help -hel -he -h h ";
+      Help_Option : String := "-help -hel -he -h ";
       Cell_Option : String := "c: -cell= -cel= -ce= -c= ";
       Float_Format_Option : String := "f: " &
         "-float-format= -float-forma= -float-form= -float-for= " &
@@ -58,7 +80,7 @@ procedure Xyz2ortho is
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
                elsif Index("-help", Full_Switch) = 1 then
-                  Put_Line ("Seen --help");
+                  Print_Help;
                end if;
             when others =>
                exit;
@@ -115,4 +137,7 @@ begin
       
    end;
 
+exception
+   when HELP_PRINTED => null;
+         
 end Xyz2ortho;
