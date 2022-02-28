@@ -5,12 +5,6 @@
 -- $URL$
 -- ----------------------------------------------------------------------------
 
--- Take an XYZ format molecular file
---  (https://en.wikipedia.org/wiki/XYZ_file_format) and convert
---  coordinates to orthogonal ones, assuming that the file contained
---  fractional coordinates. Unit cell constants can be given as
---  command line option parameters.
-
 -- Option processing example taken from:
 -- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
 -- S.G. 2021-12-26
