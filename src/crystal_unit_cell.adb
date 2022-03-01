@@ -42,6 +42,25 @@ package body Crystal_Unit_Cell is
       end loop;
    end;
    
+   function Unit_Cell_From_Vectors (M : Matrix3x3)
+                                   return Unit_Cell_Type
+   is
+      A : Long_Float := Sqrt( M(1,1)**2 + M(2,1)**2 + M(3,1)**2);
+      B : Long_Float := Sqrt( M(1,2)**2 + M(2,2)**2 + M(3,2)**2);
+      C : Long_Float := Sqrt( M(1,3)**2 + M(2,3)**2 + M(3,3)**2);
+      Alpha, Beta, Gamma : Long_Float;
+   begin
+      Alpha := Arccos ((M(1,2)*M(1,3) + M(2,2)*M(2,3) + M(3,2)*M(3,3))/(B*C));
+      Beta  := Arccos ((M(1,1)*M(1,3) + M(2,1)*M(2,3) + M(3,1)*M(3,3))/(A*C));
+      Gamma := Arccos ((M(1,1)*M(1,2) + M(2,1)*M(2,2) + M(3,1)*M(3,2))/(A*B));
+      
+      Alpha := Alpha * 180.0 / Ada.Numerics.Pi;
+      Beta  := Beta  * 180.0 / Ada.Numerics.Pi;
+      Gamma := Gamma * 180.0 / Ada.Numerics.Pi;
+      
+      return (A,B,C,Alpha,Beta,Gamma);
+   end;
+   
    function Matrix_Ortho_From_Fract ( Cell : Unit_Cell_Type ) 
                                     return Matrix3x3
    is

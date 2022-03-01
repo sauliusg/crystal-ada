@@ -18,15 +18,24 @@ package body Xyz_File is
    
    procedure Put_Non_Cell_Comment (Molecule : XYZ_File_Atoms;
                                    Unit_Cell_Given : Boolean) is
-      Cell_Index : Integer;
+      Cell_Index : Integer := Index (Molecule.Comment, " CELL:");
+      Lattice_Index : Integer := Index (Molecule.Comment, " LATTICE:");
+      Min_Index : Integer;
    begin
-      Cell_Index := Index (Molecule.Comment, " CELL:");
-      if Cell_Index > 0 and Unit_Cell_Given then
-         if Cell_Index > 1 then
-            Put (To_String (Molecule.Comment)(1..Cell_Index-1));
+      if Cell_Index = 0 then
+         Min_Index := Lattice_Index;
+      elsif Lattice_Index = 0 then
+         Min_Index := Cell_Index;
+      else
+         Min_Index :=
+           (if Cell_Index < Lattice_Index then Cell_Index else Lattice_Index);
+      end if;
+      if Min_Index > 0 and Unit_Cell_Given then
+         if Min_Index > 1 then
+            Put (To_String (Molecule.Comment)(1..Min_Index-1));
          else
-            null; -- do not print anything of we only have " CELL:" 
-                  -- on the comment line.
+            null; -- do not print anything of we only have " CELL:" or
+                  --  only " LATTICE:" on the comment line.
          end if;
       else
          Put (To_String (Molecule.Comment));

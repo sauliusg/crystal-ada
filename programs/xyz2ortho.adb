@@ -24,6 +24,8 @@ with File_Selector;          use File_Selector;
 
 procedure Xyz2ortho is
    
+   Unit_Matrix : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
+   
    Unit_Cell : Unit_Cell_Type := (others => 0.0);
 
    Unit_Cell_Given : Boolean := False;
@@ -116,6 +118,22 @@ begin
             declare
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
             begin
+               if not Unit_Cell_Given then
+                  declare
+                     Cell_Keyword : String := "CELL:";
+                     Comment : String := To_String (XYZ_Atoms.Comment);
+                     Cell_Keyword_Index : Integer := Index (Comment, Cell_Keyword);
+                     Parse_Start : Integer := Cell_Keyword_Index + Cell_Keyword'Last;
+                  begin
+                     if Cell_Keyword_Index > 0 then
+                        Parse_Unit_Cell (Comment(Parse_Start..Comment'Last), Unit_Cell);
+                        O4F := Matrix_Ortho_From_Fract (Unit_Cell);
+                     else
+                        O4F := Unit_Matrix;
+                     end if;
+                  end;
+               end if;
+               
                for I in XYZ_Atoms.Atoms'Range loop
                   XYZ_Atoms.Atoms(I) := O4F * XYZ_Atoms.Atoms(I);
                end loop;

@@ -93,9 +93,10 @@ procedure Xyz2fract is
       end loop;   
    end Process_Options;
    
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms ) is
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Unit_Cell_Known : Boolean ) is
    begin
-      Xyz_File.Put_Atoms ( Molecule, Unit_Cell, Unit_Cell_Given,
+      Xyz_File.Put_Atoms ( Molecule, Unit_Cell, Unit_Cell_Known,
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
@@ -120,6 +121,8 @@ begin
          while not End_Of_File (Current_File.all) loop
             declare
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
+               Unit_Cell_Known : Boolean := Unit_Cell_Given;
+               Cell_Vectors : Matrix3x3;
             begin
                if not Unit_Cell_Given then
                   declare
@@ -129,8 +132,10 @@ begin
                      Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
                   begin
                      if Lattice_Keyword_Index > 0 then
-                        Parse_Lattice (Comment(Parse_Start..Comment'Last), F4O);
-                        F4O := Invert (F4O);
+                        Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
+                        F4O := Invert (Cell_Vectors);
+                        Unit_Cell := Unit_Cell_From_Vectors (Cell_Vectors);
+                        Unit_Cell_Known := True;
                      else
                         F4O := Unit_Matrix;
                      end if;
@@ -141,7 +146,7 @@ begin
                   XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
                end loop;
                
-               Put_Atoms (XYZ_Atoms);
+               Put_Atoms (XYZ_Atoms, Unit_Cell_Known);
             end;
          end loop;
          
