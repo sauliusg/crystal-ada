@@ -88,13 +88,19 @@ package body Crystal_Unit_Cell is
    end;
    
    function Det (M : Matrix3x3) return Long_Float is
-      ( M(1,1)*M(2,2)*M(3,3) + M(1,2)*M(2,3)*M(3,1) + M(2,1)*M(3,2)*M(1,3) -
-          M(1,3)*M(2,2)*M(3,1) - M(2,1)*M(1,2)*M(3,3) - M(1,1)*M(2,3)*M(3,2) );
+      ( 
+        M(1,1)*M(2,2)*M(3,3) + 
+        M(1,2)*M(2,3)*M(3,1) + 
+        M(2,1)*M(3,2)*M(1,3) -
+        M(1,3)*M(2,2)*M(3,1) - 
+        M(2,1)*M(1,2)*M(3,3) - 
+        M(1,1)*M(2,3)*M(3,2)
+      );
       
    function Invert (M : Matrix3x3) return Matrix3x3 is
       D : Long_Float := Det (M);
       
-      function Minor (P, Q : Integer) return Long_Float is
+      function Adjunct (P, Q : Integer) return Long_Float is
          A : array (1..2,1..2) of Long_Float;
          K, L : Integer;
          Coeff : Long_Float;
@@ -122,9 +128,9 @@ package body Crystal_Unit_Cell is
       
    begin
       return (
-              ( Minor(1,1)/D, Minor(1,2)/D, Minor(1,3)/D ),
-              ( Minor(2,1)/D, Minor(2,2)/D, Minor(2,3)/D ),
-              ( Minor(3,1)/D, Minor(3,2)/D, Minor(3,3)/D )
+              ( Adjunct(1,1)/D, Adjunct(2,1)/D, Adjunct(3,1)/D ),
+              ( Adjunct(1,2)/D, Adjunct(2,2)/D, Adjunct(3,2)/D ),
+              ( Adjunct(1,3)/D, Adjunct(2,3)/D, Adjunct(3,3)/D )
              );
    end;
    
