@@ -24,7 +24,8 @@ with File_Selector;          use File_Selector;
 
 procedure Xyz2fract is
    
-   F4O : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
+   Unit_Matrix : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
+   F4O : Matrix3x3 := Unit_Matrix;
    
    Unit_Cell : Unit_Cell_Type := (others => 0.0);
 
@@ -127,8 +128,12 @@ begin
                      Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
                      Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
                   begin
-                     Parse_Lattice (Comment(Parse_Start..Comment'Last), F4O);
-                     F4O := Invert (F4O);
+                     if Lattice_Keyword_Index > 0 then
+                        Parse_Lattice (Comment(Parse_Start..Comment'Last), F4O);
+                        F4O := Invert (F4O);
+                     else
+                        F4O := Unit_Matrix;
+                     end if;
                   end;
                end if;
                
