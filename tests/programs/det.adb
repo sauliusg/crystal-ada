@@ -5,7 +5,7 @@ with Ada.Command_Line;       use Ada.Command_Line;
 with Crystal_Unit_Cell; use Crystal_Unit_Cell;
 
 procedure Det is
-   -- Calculate and printe determinant of a 3x3 matrix. Matrix is
+   -- Calculate and print determinant of a 3x3 matrix. Matrix is
    --  given as a set of 9 numbers on the command line
 
    -- Example:

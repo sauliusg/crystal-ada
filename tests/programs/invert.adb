@@ -5,11 +5,11 @@ with Ada.Command_Line;       use Ada.Command_Line;
 with Crystal_Unit_Cell; use Crystal_Unit_Cell;
 
 procedure Invert is
-   -- Calculate and printe determinant of a 3x3 matrix. Matrix is
-   --  given as a set of 9 numbers on the command line
+   -- Calculate and print an inverted matrix of a 3x3 matrix. Matrix
+   --  is given as a set of 9 numbers on the command line
 
    -- Example:
-   --  det 1 0 0  0 1 0  0 0 1
+   --  invert 1 0 0  0 1 0  0 0 1
    
    procedure Put (M : Matrix3x3) is
    begin
