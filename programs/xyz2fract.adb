@@ -98,9 +98,6 @@ procedure Xyz2fract is
                   Parse_Unit_Cell (Parameter, Unit_Cell);
                   Unit_Cell_Given := True;
                   F4O := Matrix_Fract_From_Ortho (Unit_Cell);
-               elsif Index("-float-format", Full_Switch) = 1 then
-                  Parse_Float_Format (Parameter, Integer_Size, 
-                                      Fraction_Size, Exponent_Size);
                elsif Index("-lattice", Full_Switch) = 1 then
                   declare
                      Lattice_Vectors : Matrix3x3;
@@ -110,6 +107,9 @@ procedure Xyz2fract is
                      Unit_Cell := Unit_Cell_From_Vectors (Lattice_Vectors);
                      Unit_Cell_Given := True;
                   end;
+               elsif Index("-float-format", Full_Switch) = 1 then
+                  Parse_Float_Format (Parameter, Integer_Size, 
+                                      Fraction_Size, Exponent_Size);
                elsif Index("-help", Full_Switch) = 1 then
                   Print_Help;
                end if;
