@@ -120,6 +120,7 @@ procedure Xyz2fract is
    end Process_Options;
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Unit_Cell : Unit_Cell_Type;
                          Unit_Cell_Known : Boolean ) is
    begin
       Xyz_File.Put_Atoms ( Molecule, Unit_Cell, Unit_Cell_Known,
@@ -184,7 +185,7 @@ begin
                   XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
                end loop;
                
-               Put_Atoms (XYZ_Atoms, Unit_Cell_Known);
+               Put_Atoms (XYZ_Atoms, Unit_Cell, Unit_Cell_Known);
             end;
          end loop;
          
