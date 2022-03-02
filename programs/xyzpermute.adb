@@ -134,10 +134,10 @@ begin
                                     File_Lattice);
                      
                      
-                     File_Lattice := Permutation * File_Lattice * Invert (Permutation);
+                     File_Lattice := Permutation * File_Lattice;
                      Lattice_Known := True;
                   else
-                     Warning ("Lattice vectors are not known in the file'" &
+                     Warning ("Lattice vectors are not known in the file '" &
                                 To_String(File_Name) & "' -- your result " &
                                 "may loose track of the unit cell vectors.");
                   end if;

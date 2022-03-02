@@ -1,4 +1,4 @@
-bin/xyzpermute: WARNING, Lattice vectors are not known in the file'tests/cases/xyzpermute_001.inp' -- your result may loose track of the unit cell vectors.
+bin/xyzpermute: WARNING, Lattice vectors are not known in the file 'tests/cases/xyzpermute_001.inp' -- your result may loose track of the unit cell vectors.
 45
 2000000
 Nd -1.03599000000000E+00  8.02856000000000E+00  3.31608000000000E+00
