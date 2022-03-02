@@ -21,6 +21,7 @@ with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
+with User_Error_Messages;    use User_Error_Messages;
 
 procedure Xyz2fract is
    
@@ -36,20 +37,6 @@ procedure Xyz2fract is
    
    Unknown_Unit_Cell_Status : 
      constant Ada.Command_Line.Exit_Status := 1;
-   
-   procedure Warning ( Message : in String ) is
-   begin
-      Put_Line (Standard_Error, Command_Name &
-                  ": WARNING, " & Message);
-   end;
-   
-   procedure Error ( Message : in String; 
-                     Status : Ada.Command_Line.Exit_Status ) is
-   begin
-      Put_Line (Standard_Error, Command_Name &
-                  ": ERROR, " & Message);
-      Ada.Command_Line.Set_Exit_Status (Status);
-   end;
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
