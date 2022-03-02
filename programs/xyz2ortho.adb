@@ -21,6 +21,7 @@ with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
+with User_Error_Messages;    use User_Error_Messages;
 
 procedure Xyz2ortho is
    
@@ -31,6 +32,10 @@ procedure Xyz2ortho is
    Unit_Cell_Given : Boolean := False;
    
    HELP_PRINTED : exception ;
+   UNKNOWN_UNIT_CELL : exception ;
+   
+   Unknown_Unit_Cell_Status : 
+     constant Ada.Command_Line.Exit_Status := 1;
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
@@ -94,6 +99,7 @@ procedure Xyz2ortho is
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
+   File_Name : Unbounded_String;
    Current_File : Access_File_Type;
 
    O4F : Matrix3x3;
@@ -105,7 +111,6 @@ begin
    O4F := Matrix_Ortho_From_Fract (Unit_Cell);
    
    declare
-      File_Name : Unbounded_String;
       Is_File_Processed : Boolean := False;
       Is_Last_File: Boolean;
    begin
@@ -132,10 +137,12 @@ begin
                         Parse_Unit_Cell (Comment(Parse_Start..Comment'Last), Unit_Cell);
                         O4F := Matrix_Ortho_From_Fract (Unit_Cell);
                         Unit_Cell_Known := True;
-                     else
-                        O4F := Unit_Matrix;
                      end if;
                   end;
+               end if;
+               
+               if not Unit_Cell_Known then
+                  raise UNKNOWN_UNIT_CELL;
                end if;
                
                for I in XYZ_Atoms.Atoms'Range loop
@@ -158,4 +165,8 @@ begin
 exception
    when HELP_PRINTED => null;
          
+   when UNKNOWN_UNIT_CELL =>
+      Error ("unit cell not known when processing file '" &
+               To_String(File_Name) & "'", Unknown_Unit_Cell_Status);
+      
 end Xyz2ortho;
