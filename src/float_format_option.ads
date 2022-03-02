@@ -1,7 +1,7 @@
 package Float_Format_Option is
    
    -- Format number for printing out floating point numbers:
-   Integer_Size : Integer := 15;
+   Integer_Size : Integer := 2;
    Fraction_Size : Integer := 14;
    Exponent_Size : Integer := 3;
    

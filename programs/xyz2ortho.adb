@@ -51,7 +51,7 @@ procedure Xyz2ortho is
       New_Line;
       P("OPTIONS:");
       P("    -c, --cell ""10 10 10 90 90 90""  Specify unit cell for conversion");
-      P("    -f, --float-format 15,12,3      Specify format for floating point output");
+      P("    -f, --float-format 2,14,3       Specify format for floating point output");
       P("        For Ada, floating point format consists of three numbers:");
       P("        the integer part length, the fraction part length and the exponent length.");
       P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");

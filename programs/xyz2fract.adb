@@ -56,7 +56,7 @@ procedure Xyz2fract is
       -- P("    -l, --lattice ""0.1 0 0  0 0.2 0  0 0 0.15""");
       -- P("        Specify unit cell for conversion");
       -- New_Line;
-      P("    -f, --float-format 15,12,3      Specify format for floating point output");
+      P("    -f, --float-format 2,14,3       Specify format for floating point output");
       P("        For Ada, floating point format consists of three numbers:");
       P("        the integer part length, the fraction part length and the exponent length.");
       P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");
