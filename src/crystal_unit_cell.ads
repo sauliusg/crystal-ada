@@ -4,7 +4,9 @@ package Crystal_Unit_Cell is
    type Unit_Cell_Type is array (1..6) of Long_Float;
    
    type Matrix3x3 is array (1..3,1..3) of Long_Float;
-      
+   
+   function "*" (M1, M2 : Matrix3x3) return Matrix3x3;
+   
    procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type );
    procedure Parse_Lattice ( Line : String; Lattice : in out Matrix3x3 );
       

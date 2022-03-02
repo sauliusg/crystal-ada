@@ -11,6 +11,21 @@ package body Crystal_Unit_Cell is
    
    use Long_Float_Elementary_Functions;
    
+   function "*" (M1, M2 : Matrix3x3) return Matrix3x3
+   is
+      Result : Matrix3x3;
+   begin
+      for I in M1'Range(2) loop
+         for J in M2'Range(1) loop
+            Result(I,J) := 0.0;
+            for K in M1'Range(1) loop
+               Result(I,J) := Result(I,J) + M1(I,K)*M2(K,J);
+            end loop;
+         end loop;
+      end loop;
+      return Result;
+   end;
+   
    procedure Parse_Unit_Cell ( Line : String; Cell : in out Unit_Cell_Type ) is
       Position : Integer := Line'First - 1;
       Line_Without_Commas : String := Line;
