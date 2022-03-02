@@ -24,13 +24,13 @@ package Xyz_File is
 
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
                          Unit_Cell : Unit_Cell_Type;
-                         Unit_Cell_Given : Boolean;
+                         Unit_Cell_Known : Boolean;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer );
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
                          Lattice : Matrix3x3;
-                         Unit_Cell_Given : Boolean;
+                         Unit_Cell_Known : Boolean;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer );
    

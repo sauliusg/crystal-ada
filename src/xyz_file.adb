@@ -17,7 +17,7 @@ package body Xyz_File is
    end;
    
    procedure Put_Non_Cell_Comment (Molecule : XYZ_File_Atoms;
-                                   Unit_Cell_Given : Boolean) is
+                                   Unit_Cell_Known : Boolean) is
       Cell_Index : Integer := Index (Molecule.Comment, " CELL:");
       Lattice_Index : Integer := Index (Molecule.Comment, " LATTICE:");
       Min_Index : Integer;
@@ -30,7 +30,7 @@ package body Xyz_File is
          Min_Index :=
            (if Cell_Index < Lattice_Index then Cell_Index else Lattice_Index);
       end if;
-      if Min_Index > 0 and Unit_Cell_Given then
+      if Min_Index > 0 and Unit_Cell_Known then
          if Min_Index > 1 then
             Put (To_String (Molecule.Comment)(1..Min_Index-1));
          else
@@ -70,13 +70,13 @@ package body Xyz_File is
    
    procedure Put_Atom_Comment ( Molecule : XYZ_File_Atoms;
                                 Unit_Cell : Unit_Cell_Type;
-                                Unit_Cell_Given : Boolean;
+                                Unit_Cell_Known : Boolean;
                                 Integer_Size, Fraction_Size, 
                                   Exponent_Size : Integer ) is
    begin
-      Put_Non_Cell_Comment (Molecule, Unit_Cell_Given);
+      Put_Non_Cell_Comment (Molecule, Unit_Cell_Known);
       
-      if Unit_Cell_Given then
+      if Unit_Cell_Known then
          Put_Cell_Keyword (Molecule, Unit_Cell,
                            Integer_Size => Integer_Size,
                            Fraction_Size => Fraction_Size,
@@ -86,13 +86,13 @@ package body Xyz_File is
    
    procedure Put_Atom_Comment ( Molecule : XYZ_File_Atoms;
                                 Lattice : Matrix3x3;
-                                Unit_Cell_Given : Boolean;
+                                Unit_Cell_Known : Boolean;
                                 Integer_Size, Fraction_Size, 
                                   Exponent_Size : Integer ) is
    begin
-      Put_Non_Cell_Comment (Molecule, Unit_Cell_Given);
+      Put_Non_Cell_Comment (Molecule, Unit_Cell_Known);
       
-      if Unit_Cell_Given then
+      if Unit_Cell_Known then
          Put_Lattice_Keyword (Molecule, Lattice,
                               Integer_Size => Integer_Size,
                               Fraction_Size => Fraction_Size,
@@ -119,13 +119,13 @@ package body Xyz_File is
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
                          Unit_Cell : Unit_Cell_Type;
-                         Unit_Cell_Given : Boolean;
+                         Unit_Cell_Known : Boolean;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer ) is
    begin
       Put (Molecule.Atoms'Last, 1);
       New_Line;
-      Put_Atom_Comment (Molecule, Unit_Cell, Unit_Cell_Given,
+      Put_Atom_Comment (Molecule, Unit_Cell, Unit_Cell_Known,
                         Integer_Size => Integer_Size,
                         Fraction_Size => Fraction_Size,
                         Exponent_Size => Exponent_Size
@@ -140,13 +140,13 @@ package body Xyz_File is
    
    procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
                          Lattice : Matrix3x3;
-                         Unit_Cell_Given : Boolean;
+                         Unit_Cell_Known : Boolean;
                          Integer_Size, Fraction_Size, 
                            Exponent_Size : Integer ) is
    begin
       Put (Molecule.Atoms'Last, 1);
       New_Line;
-      Put_Atom_Comment (Molecule, Lattice, Unit_Cell_Given,
+      Put_Atom_Comment (Molecule, Lattice, Unit_Cell_Known,
                         Integer_Size => Integer_Size,
                         Fraction_Size => Fraction_Size,
                         Exponent_Size => Exponent_Size
@@ -167,7 +167,7 @@ package body Xyz_File is
    begin
       Put_Atoms ( Molecule,
                   Unit_Cell => Dummy,
-                  Unit_Cell_Given => False,
+                  Unit_Cell_Known => False,
                   Integer_Size => Integer_size,
                   Fraction_Size => Fraction_Size,
                   Exponent_Size => Exponent_Size );
