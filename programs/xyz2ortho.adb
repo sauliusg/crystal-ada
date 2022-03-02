@@ -86,9 +86,11 @@ procedure Xyz2ortho is
       end loop;   
    end Process_Options;
    
-   procedure Put_Atoms ( Molecule : XYZ_File_Atoms; Lattice : Matrix3x3 ) is
+   procedure Put_Atoms ( Molecule : XYZ_File_Atoms;
+                         Lattice : Matrix3x3;
+                         Unit_Cell_Known : Boolean) is
    begin
-      Xyz_File.Put_Atoms ( Molecule, Lattice, Unit_Cell_Given,
+      Xyz_File.Put_Atoms ( Molecule, Lattice, Unit_Cell_Known,
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
@@ -117,6 +119,7 @@ begin
          while not End_Of_File (Current_File.all) loop
             declare
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
+               Unit_Cell_Known : Boolean := Unit_Cell_Given;
             begin
                if not Unit_Cell_Given then
                   declare
@@ -128,6 +131,7 @@ begin
                      if Cell_Keyword_Index > 0 then
                         Parse_Unit_Cell (Comment(Parse_Start..Comment'Last), Unit_Cell);
                         O4F := Matrix_Ortho_From_Fract (Unit_Cell);
+                        Unit_Cell_Known := True;
                      else
                         O4F := Unit_Matrix;
                      end if;
@@ -138,7 +142,7 @@ begin
                   XYZ_Atoms.Atoms(I) := O4F * XYZ_Atoms.Atoms(I);
                end loop;
                
-               Put_Atoms (XYZ_Atoms, O4F);
+               Put_Atoms (XYZ_Atoms, O4F, Unit_Cell_Known);
             end;
          end loop;
          
