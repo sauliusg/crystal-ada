@@ -126,20 +126,33 @@ begin
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
                Unit_Cell_Known : Boolean := Unit_Cell_Given;
             begin
-               if not Unit_Cell_Given then
-                  declare
-                     Cell_Keyword : String := "CELL:";
-                     Comment : String := To_String (XYZ_Atoms.Comment);
-                     Cell_Keyword_Index : Integer := Index (Comment, Cell_Keyword);
-                     Parse_Start : Integer := Cell_Keyword_Index + Cell_Keyword'Last;
-                  begin
-                     if Cell_Keyword_Index > 0 then
-                        Parse_Unit_Cell (Comment(Parse_Start..Comment'Last), Unit_Cell);
-                        O4F := Matrix_Ortho_From_Fract (Unit_Cell);
-                        Unit_Cell_Known := True;
+               declare
+                  Cell_Keyword : String := "CELL:";
+                  Comment : String := To_String (XYZ_Atoms.Comment);
+                  Cell_Keyword_Index : Integer := Index (Comment, Cell_Keyword);
+                  Parse_Start : Integer := Cell_Keyword_Index + Cell_Keyword'Last;
+                  File_Unit_Cell : Unit_Cell_Type;
+               begin
+                  if Cell_Keyword_Index > 0 then
+                     Parse_Unit_Cell (Comment(Parse_Start..Comment'Last),
+                                      File_Unit_Cell);
+                     
+                     if Unit_Cell_Given then
+                        if Unit_Cell /= File_Unit_Cell then
+                           Warning ("Unit cell given in the file '" &
+                                      To_String (File_Name) &
+                                      "' is different from the one " &
+                                      "provided on the command line. " &
+                                      "Taking unit cell from the command line");
+                        end if;
+                     else
+                        O4F := Matrix_Ortho_From_Fract (File_Unit_Cell);
+                        Unit_Cell := File_Unit_Cell;
                      end if;
-                  end;
-               end if;
+                     
+                     Unit_Cell_Known := True;
+                  end if;
+               end;
                
                if not Unit_Cell_Known then
                   raise UNKNOWN_UNIT_CELL;
