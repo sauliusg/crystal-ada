@@ -32,6 +32,24 @@ procedure Xyz2fract is
    Unit_Cell_Given : Boolean := False;
    
    HELP_PRINTED : exception ;
+   UNKNOWN_UNIT_CELL : exception ;
+   
+   Unknown_Unit_Cell_Status : 
+     constant Ada.Command_Line.Exit_Status := 1;
+   
+   procedure Warning ( Message : in String ) is
+   begin
+      Put_Line (Standard_Error, Command_Name &
+                  ": WARNING, " & Message);
+   end;
+   
+   procedure Error ( Message : in String; 
+                     Status : Ada.Command_Line.Exit_Status ) is
+   begin
+      Put_Line (Standard_Error, Command_Name &
+                  ": ERROR, " & Message);
+      Ada.Command_Line.Set_Exit_Status (Status);
+   end;
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
@@ -100,6 +118,7 @@ procedure Xyz2fract is
                            Integer_Size, Fraction_Size, Exponent_Size );
    end;
    
+   File_Name : Unbounded_String;
    Current_File : Access_File_Type;
 
 begin
@@ -107,7 +126,6 @@ begin
    Process_Options;
    
    declare
-      File_Name : Unbounded_String;
       Is_File_Processed : Boolean := False;
       Is_Last_File: Boolean;
    begin
@@ -124,22 +142,34 @@ begin
                Unit_Cell_Known : Boolean := Unit_Cell_Given;
                Cell_Vectors : Matrix3x3;
             begin
-               if not Unit_Cell_Given then
-                  declare
-                     Lattice_Keyword : String := "LATTICE:";
-                     Comment : String := To_String (XYZ_Atoms.Comment);
-                     Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
-                     Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
-                  begin
-                     if Lattice_Keyword_Index > 0 then
-                        Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
+               declare
+                  Lattice_Keyword : String := "LATTICE:";
+                  Comment : String := To_String (XYZ_Atoms.Comment);
+                  Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
+                  Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
+               begin
+                  if Lattice_Keyword_Index > 0 then
+                     Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
+                        
+                     if Unit_Cell_Given then
+                        if Unit_Cell /= Unit_Cell_From_Vectors (Cell_Vectors) then
+                           Warning ("Unit cell given in the file '" &
+                                      To_String (File_Name) &
+                                      "'is different from the one " &
+                                      "provided on the command line. " &
+                                      "Taking unit cell from the command line");
+                        end if;
+                     else
                         F4O := Invert (Cell_Vectors);
                         Unit_Cell := Unit_Cell_From_Vectors (Cell_Vectors);
-                        Unit_Cell_Known := True;
-                     else
-                        F4O := Unit_Matrix;
                      end if;
-                  end;
+                     
+                     Unit_Cell_Known := True;
+                  end if;
+               end;
+               
+               if not Unit_Cell_Known then
+                  raise UNKNOWN_UNIT_CELL;
                end if;
                
                for I in XYZ_Atoms.Atoms'Range loop
@@ -161,5 +191,9 @@ begin
    
 exception
    when HELP_PRINTED => null;
-   
+      
+   when UNKNOWN_UNIT_CELL =>
+      Error ("unit cell not known when processing file '" &
+               To_String(File_Name) & "'", Unknown_Unit_Cell_Status);
+      
 end Xyz2fract;
