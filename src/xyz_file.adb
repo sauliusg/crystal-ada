@@ -190,7 +190,14 @@ package body Xyz_File is
                Position := Line'First;
             else
                XYZ_Atoms.Atoms(I).Atom_Type := Line(1..2);
+               if not (Line(2) in 'A' .. 'Z') and then
+                  not (Line(2) in  'a' .. 'z') then
+                  XYZ_Atoms.Atoms(I).Atom_Type(2) := ' ';
+               end if;
                Position := Line'First + 1;
+               while Line(Position+1) /= ' ' loop
+                  Position := Position + 1;
+               end loop;
             end if;
             Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).X, Position);
             Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).Y, Position);
