@@ -52,10 +52,10 @@ procedure Xyz2fract is
       New_Line;
       P("OPTIONS:");
       P("    -c, --cell ""10 10 10 90 90 90""  Specify unit cell for conversion");
-      -- New_Line;
-      -- P("    -l, --lattice ""0.1 0 0  0 0.2 0  0 0 0.15""");
-      -- P("        Specify unit cell for conversion");
-      -- New_Line;
+      New_Line;
+      P("    -l, --lattice ""0.1 0 0  0 0.2 0  0 0 0.15""");
+      P("        Specify unit cell vectors in ortho frame for conversion");
+      New_Line;
       P("    -f, --float-format 2,14,3       Specify format for floating point output");
       P("        For Ada, floating point format consists of three numbers:");
       P("        the integer part length, the fraction part length and the exponent length.");
@@ -71,9 +71,12 @@ procedure Xyz2fract is
       Float_Format_Option : String := "f: " &
         "-float-format= -float-forma= -float-form= -float-for= " &
         "-float-fo= -float-f= -float= -floa= -flo= -fl= -f= ";
+      Lattice_Option : String := "l: " &
+        "-lattice= -lattic= -latti= -latt= -lat= -la= -l=";
    begin
       loop
-         case Getopt (Help_Option & Cell_Option & Float_Format_Option) is
+         case Getopt (Help_Option & Cell_Option & Float_Format_Option &
+                        Lattice_Option) is
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
@@ -81,6 +84,15 @@ procedure Xyz2fract is
                Parse_Unit_Cell (Parameter, Unit_Cell);
                Unit_Cell_Given := True;
                F4O := Matrix_Fract_From_Ortho (Unit_Cell);
+            when 'l' =>
+               declare
+                  Lattice_Vectors : Matrix3x3;
+               begin
+                  Parse_Lattice (Parameter, Lattice_Vectors);
+                  F4O := Invert (Lattice_Vectors);
+                  Unit_Cell := Unit_Cell_From_Vectors (Lattice_Vectors);
+                  Unit_Cell_Given := True;
+               end;
             when '-' =>
                if Index("-cell", Full_Switch) = 1 then
                   Parse_Unit_Cell (Parameter, Unit_Cell);
@@ -89,6 +101,15 @@ procedure Xyz2fract is
                elsif Index("-float-format", Full_Switch) = 1 then
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
+               elsif Index("-lattice", Full_Switch) = 1 then
+                  declare
+                     Lattice_Vectors : Matrix3x3;
+                  begin
+                     Parse_Lattice (Parameter, Lattice_Vectors);
+                     F4O := Invert (Lattice_Vectors);
+                     Unit_Cell := Unit_Cell_From_Vectors (Lattice_Vectors);
+                     Unit_Cell_Given := True;
+                  end;
                elsif Index("-help", Full_Switch) = 1 then
                   Print_Help;
                end if;
