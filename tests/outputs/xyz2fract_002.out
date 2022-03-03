@@ -1,1 +1,1 @@
-bin/xyz2fract: ERROR, unit cell not known when processing file 'tests/cases/xyz2fract_002.inp'
+bin/xyz2fract: ERROR, lattice vectors not known when processing file 'tests/cases/xyz2fract_002.inp'

@@ -202,7 +202,7 @@ exception
    when HELP_PRINTED => null;
       
    when UNKNOWN_UNIT_CELL =>
-      Error ("unit cell not known when processing file '" &
+      Error ("lattice vectors not known when processing file '" &
                To_String(File_Name) & "'", Unknown_Unit_Cell_Status);
       
 end Xyz2fract;
