@@ -149,13 +149,13 @@ begin
             declare
                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
                Unit_Cell_Known : Boolean := Unit_Cell_Given;
-               Cell_Vectors : Matrix3x3;
             begin
                declare
                   Lattice_Keyword : String := "LATTICE:";
                   Comment : String := To_String (XYZ_Atoms.Comment);
                   Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
                   Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
+                  Cell_Vectors : Matrix3x3;
                begin
                   if Lattice_Keyword_Index > 0 then
                      Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
