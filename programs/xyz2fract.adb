@@ -208,9 +208,9 @@ exception
          Msg_String : String :=
            (if Message'Last < 20 then Message else Message(1..20) & " ...");
       begin
-         Error ("lattice vectors not known when processing file '" &
-                  To_String(File_Name) & "' (comment: '" &
-                  Msg_String & "')", 
+         Error ("lattice vectors not known when processing file " &
+                  "'" & To_String(File_Name) & "' " &
+                  "('" & Msg_String & "')", 
                 Unknown_Unit_Cell_Status);
       end;
                   

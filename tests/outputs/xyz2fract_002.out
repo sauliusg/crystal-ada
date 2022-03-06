@@ -1,1 +1,1 @@
-bin/xyz2fract: ERROR, lattice vectors not known when processing file 'tests/cases/xyz2fract_002.inp' (comment: '2000001')
+bin/xyz2fract: ERROR, lattice vectors not known when processing file 'tests/cases/xyz2fract_002.inp' ('2000001')

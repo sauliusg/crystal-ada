@@ -1,1 +1,1 @@
-bin/xyz2ortho: ERROR, unit cell not known when processing file 'tests/cases/xyz2ortho_001.inp' (comment: '2000000')
+bin/xyz2ortho: ERROR, unit cell not known when processing file 'tests/cases/xyz2ortho_001.inp' ('2000000')

@@ -133,4 +133,4 @@ N      0.4257     0.5493     0.1234
 O      0.3516     0.4962     0.0639
 O      0.5039     0.6030     0.1802
 S      0.2116     0.1889     0.2475
-bin/xyz2fract: ERROR, lattice vectors not known when processing file 'tests/cases/xyz2fract_020.inp' (comment: '2200003 ')
+bin/xyz2fract: ERROR, lattice vectors not known when processing file 'tests/cases/xyz2fract_020.inp' ('2200003 ')

@@ -70,4 +70,4 @@ C   3.29950800000000E+00  1.42874550000000E+01  1.41111504000000E+01
 H   3.12200000000000E+00  1.43737496000000E+01  1.31729976000000E+01
 H   3.89804000000000E+00  1.49859528000000E+01  1.43905608000000E+01
 H   2.47619200000000E+00  1.43590958000000E+01  1.45996560000000E+01
-bin/xyz2ortho: ERROR, unit cell not known when processing file 'tests/cases/xyz2ortho_017.inp' (comment: '2200002')
+bin/xyz2ortho: ERROR, unit cell not known when processing file 'tests/cases/xyz2ortho_017.inp' ('2200002')
