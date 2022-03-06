@@ -16,6 +16,7 @@ with Ada.Command_Line;       use Ada.Command_Line;
 with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with GNAT.Command_Line;      use GNAT.Command_Line;
+with Ada.Exceptions;         use Ada.Exceptions;
 
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
@@ -180,7 +181,7 @@ begin
                end;
                
                if not Unit_Cell_Known then
-                  raise UNKNOWN_UNIT_CELL;
+                  raise UNKNOWN_UNIT_CELL with To_String (XYZ_Atoms.Comment);
                end if;
                
                for I in XYZ_Atoms.Atoms'Range loop
@@ -203,8 +204,16 @@ begin
 exception
    when HELP_PRINTED => null;
          
-   when UNKNOWN_UNIT_CELL =>
-      Error ("unit cell not known when processing file '" &
-               To_String(File_Name) & "'", Unknown_Unit_Cell_Status);
+   when Exception_Occurence : UNKNOWN_UNIT_CELL =>
+      declare
+         Message : String := Exception_Message(Exception_Occurence);
+         Msg_String : String :=
+           (if Message'Last < 20 then Message else Message(1..20) & " ...");
+      begin
+         Error ("unit cell not known when processing file '" &
+                  To_String(File_Name) & "' (comment: '" &
+                  Msg_String & "')",
+                Unknown_Unit_Cell_Status);
+      end;
       
-end Xyz2ortho;
+           end Xyz2ortho;
