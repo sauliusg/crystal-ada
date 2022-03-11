@@ -7,6 +7,7 @@ package Xyz_File is
    type Atom_Descriptor is
       record
          Atom_Type : String(1..2);
+         Atom_Name : Unbounded_String;
          X, Y, Z : Long_Float;
       end record;
    

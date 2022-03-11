@@ -1,7 +1,11 @@
-with Text_Io;                use Text_Io;
-with Ada.Integer_Text_Io;    use Ada.Integer_Text_Io;
-with Ada.Long_Float_Text_IO; use Ada.Long_Float_Text_IO;
-with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
+with Text_Io;                  use Text_Io;
+with Ada.Text_IO.Unbounded_IO; use Ada.Text_IO.Unbounded_IO;
+with Ada.Integer_Text_Io;      use Ada.Integer_Text_Io;
+with Ada.Long_Float_Text_IO;   use Ada.Long_Float_Text_IO;
+with Ada.Strings;              use Ada.Strings;
+with Ada.Strings.Fixed;        use Ada.Strings.Fixed;
+with Ada.Strings.Maps;         use Ada.Strings.Maps;
+with Crystal_Unit_Cell;        use Crystal_Unit_Cell;
 
 package body Xyz_File is
    
@@ -10,6 +14,7 @@ package body Xyz_File is
       R : Atom_Descriptor;
    begin
       R.Atom_Type := A.Atom_Type;
+      R.Atom_Name := A.Atom_Name;
       R.X := A.X*M(1,1) + A.Y*M(1,2) + A.Z*M(1,3);
       R.Y := A.X*M(2,1) + A.Y*M(2,2) + A.Z*M(2,3);
       R.Z := A.X*M(3,1) + A.Y*M(3,2) + A.Z*M(3,3);
@@ -110,7 +115,11 @@ package body Xyz_File is
                                      Exponent_Size : Integer) is
    begin
       for I in Molecule.Atoms'Range loop
-         Put (Molecule.Atoms(I).Atom_Type);
+         -- Put (Molecule.Atoms(I).Atom_Type);
+         Put (Molecule.Atoms(I).Atom_Name);
+         if To_String(Molecule.Atoms(I).Atom_Name)'Last = 1 then
+            Put (" ");
+         end if;
          Put (" ");
          Put (Molecule.Atoms(I).X, Integer_Size, Fraction_Size, Exponent_Size);
          Put (" ");
@@ -181,27 +190,27 @@ package body Xyz_File is
       N : Integer := Integer'Value (Get_Line (File));
       Comment : String := Get_Line (File);
       XYZ_Atoms : XYZ_File_Atoms (N);
+      Whitespace : constant Character_Set := To_Set (' ');
    begin
       XYZ_Atoms.Comment := To_Unbounded_String (Comment);
       for I in 1..N loop
          declare
             Line : String := Get_Line (File);
-            Position : Integer := Line'First;
+            Start, Position : Integer;
          begin
+            Find_Token( Line, Set => Whitespace, From => 1, Test => Outside,
+                        First => Start, Last => Position );
+            XYZ_Atoms.Atoms(I).Atom_Name :=
+              To_Unbounded_String (Line (Start..Position));
             if Line(2) = ' ' then
                XYZ_Atoms.Atoms(I).Atom_Type(1) := Line(1);
                XYZ_Atoms.Atoms(I).Atom_Type(2) := ' ';
-               Position := Line'First;
             else
                XYZ_Atoms.Atoms(I).Atom_Type := Line(1..2);
                if not (Line(2) in 'A' .. 'Z') and then
                   not (Line(2) in  'a' .. 'z') then
                   XYZ_Atoms.Atoms(I).Atom_Type(2) := ' ';
                end if;
-               Position := Line'First + 1;
-               while Line(Position+1) /= ' ' loop
-                  Position := Position + 1;
-               end loop;
             end if;
             Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).X, Position);
             Get (Line(Position+1..Line'Last), XYZ_Atoms.Atoms(I).Y, Position);
