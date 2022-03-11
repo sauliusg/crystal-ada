@@ -38,7 +38,7 @@ package body Xyz_File is
          if Min_Index > 1 then
             Put (To_String (Molecule.Comment)(1..Min_Index-1));
          else
-            null; -- do not print anything of we only have "CELL:" or
+            null; -- do not print anything if we only have "CELL:" or
                   --  only "LATTICE:" on the comment line.
          end if;
       else
