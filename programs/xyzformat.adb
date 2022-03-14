@@ -45,27 +45,55 @@ procedure XyzFormat is
       P("        the integer part length, the fraction part length and the exponent length.");
       P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");
       New_Line;
+      P("    -H, --human-readable            Use format 8,6,0 for better human readability");
+      P("    -M, --machine-readable          Use format 2,14,3 to maintain precision");
+      New_Line;
       P("    --help                          Print a short help message and exit;");
       raise HELP_PRINTED;
    end;
    
    procedure Process_Options is
-      Help_Option : String := "-help -hel -he -h h";
+      Help_Option : String := "-help -hel -he -h h ";
       Float_Format_Option : String := "f: " &
         "-float-format= -float-forma= -float-form= -float-for= " &
-        "-float-fo= -float-f= -float= -floa= -flo= -fl= -f=";
+        "-float-fo= -float-f= -float= -floa= -flo= -fl= -f= ";
+      Human_Readable_Option : String := "H " &
+        "-human-readable -human-readabl -human-readab -human-reada " &
+        "-human-read -human-rea -human-re -human-r -human -huma " &
+        "-hum -hu -h ";
+      Machine_Readable_Option : String := "M " &
+        "-machine-readable -machine-readabl -machine-readab -machine-reada " &
+        "-machine-read -machine-rea -machine-re -machine-r -machine -machin " &
+        "-machi -mach -mac -ma -m";
    begin
       loop
-         case Getopt (Help_Option & " " & Float_Format_Option) is
+         case Getopt (Help_Option & Float_Format_Option &
+                        Human_Readable_Option & Machine_Readable_Option) is
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
+            when 'H' =>
+               Integer_Size := 8;
+               Fraction_Size := 6;
+               Exponent_Size := 0;
+            when 'M' =>
+               Integer_Size := 2;
+               Fraction_Size := 14;
+               Exponent_Size := 3;
             when '-' =>
                if Index("-help", Full_Switch) = 1 then
                   Print_Help;
                elsif Index("-float-format", Full_Switch) = 1 then
                   Parse_Float_Format (Parameter, Integer_Size, 
                                       Fraction_Size, Exponent_Size);
+               elsif Index("-human-readable", Full_Switch) = 1 then
+                  Integer_Size := 8;
+                  Fraction_Size := 6;
+                  Exponent_Size := 0;
+               elsif Index("-machine-readable", Full_Switch) = 1 then
+                  Integer_Size := 2;
+                  Fraction_Size := 14;
+                  Exponent_Size := 3;
                end if;
             when others =>
                exit;
