@@ -25,9 +25,12 @@ with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
 
+with Project_Version;        use Project_Version;
+
 procedure XyzFormat is
    
    HELP_PRINTED : exception;
+   VERSION_PRINTED : exception;
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
@@ -64,11 +67,13 @@ procedure XyzFormat is
       Machine_Readable_Option : String := "M " &
         "-machine-readable -machine-readabl -machine-readab -machine-reada " &
         "-machine-read -machine-rea -machine-re -machine-r -machine -machin " &
-        "-machi -mach -mac -ma -m";
+        "-machi -mach -mac -ma -m ";
+      Version_Option : String := "-version -versio -versi -vers -ver -ve -v";
    begin
       loop
          case Getopt (Help_Option & Float_Format_Option &
-                        Human_Readable_Option & Machine_Readable_Option) is
+                        Human_Readable_Option & Machine_Readable_Option &
+                        Version_Option) is
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
@@ -94,6 +99,9 @@ procedure XyzFormat is
                   Integer_Size := 2;
                   Fraction_Size := 14;
                   Exponent_Size := 3;
+               elsif Index("-version", Full_Switch) = 1 then
+                  Put_Line (Command_Name & " version " & Version);
+                  raise VERSION_PRINTED;
                end if;
             when others =>
                exit;
@@ -142,5 +150,6 @@ begin
    
 exception
    when HELP_PRINTED => null;
+   when VERSION_PRINTED => null;
    
 end XyzFormat;
