@@ -52,6 +52,7 @@ procedure XyzFormat is
       P("    -M, --machine-readable          Use format 2,14,3 to maintain precision");
       New_Line;
       P("    --help                          Print a short help message and exit;");
+      P("    --version                       Print program project version and exit;");
       raise HELP_PRINTED;
    end;
    
