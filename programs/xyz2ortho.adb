@@ -24,6 +24,8 @@ with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
 with User_Error_Messages;    use User_Error_Messages;
 
+with Project_Version;        use Project_Version;
+
 procedure Xyz2ortho is
    
    Unit_Matrix : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
@@ -35,6 +37,7 @@ procedure Xyz2ortho is
    O4F : Matrix3x3;
    
    HELP_PRINTED : exception ;
+   VERSION_PRINTED : exception;
    UNKNOWN_UNIT_CELL : exception ;
    
    Unknown_Unit_Cell_Status : 
@@ -67,6 +70,7 @@ procedure Xyz2ortho is
       P("    -M, --machine-readable          Use format 2,14,3 to maintain precision");
       New_Line;
       P("    --help                          Print a short help message and exit;");
+      P("    --version                       Print program project version and exit;");
       raise HELP_PRINTED;
    end;
    
@@ -85,12 +89,13 @@ procedure Xyz2ortho is
         "-machine-read -machine-rea -machine-re -machine-r -machine -machin " &
         "-machi -mach -mac -ma -m ";
       Lattice_Option : String := "l: " &
-        "-lattice= -lattic= -latti= -latt= -lat= -la= -l=";
+        "-lattice= -lattic= -latti= -latt= -lat= -la= -l= ";
+      Version_Option : String := "-version -versio -versi -vers -ver -ve -v";
    begin
       loop
          case Getopt (Help_Option & Cell_Option & Float_Format_Option &
                         Human_Readable_Option & Machine_Readable_Option &
-                        Lattice_Option) is
+                        Lattice_Option & Version_Option) is
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
@@ -142,6 +147,9 @@ procedure Xyz2ortho is
                   Exponent_Size := 3;
                elsif Index("-help", Full_Switch) = 1 then
                   Print_Help;
+               elsif Index("-version", Full_Switch) = 1 then
+                  Put_Line (Command_Name & " version " & Version);
+                  raise VERSION_PRINTED;
                end if;
             when others =>
                exit;
@@ -232,6 +240,8 @@ begin
 exception
    when HELP_PRINTED => null;
          
+   when VERSION_PRINTED => null;
+      
    when Exception_Occurence : UNKNOWN_UNIT_CELL =>
       declare
          Message : String := Exception_Message(Exception_Occurence);
