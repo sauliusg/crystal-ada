@@ -16,10 +16,6 @@ SVN_VERSION_KEYWORDS ?= WIP $$Revision: 299 $$ $$URL: svn+ssh://saulius-grazulis
 
 VFILE ?= .version
 
-VERSION_PM ?= lib/perl5/Version.pm
-
-.PRECIOUS: ${VERSION_PM}
-
 REPORTED_VERSION := $(shell grep -v "^\#" ${VFILE} | awk '{print $$0}' | sed 's/\$$//g; s/  */ /g')
 VERSION := $(shell grep -v "^\#" ${VFILE} | awk '{print $$1}' )
 
@@ -58,8 +54,3 @@ patch:
 		${VFILE} > ${VFILE}.$$$$; \
 	cat ${VFILE}.$$$$ > ${VFILE}; \
 	rm -f ${VFILE}.$$$$
-
-cleanAll distclean: clean-version-svn
-
-clean-version-svn:
-	rm -f ${VERSION_PM}
