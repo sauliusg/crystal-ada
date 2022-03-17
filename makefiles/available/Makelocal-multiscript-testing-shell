@@ -43,9 +43,11 @@ out outputs: ${OUTP_FILES}
 
 # Dependencies for the test files:
 
-include .sh-depend
+SH_TEST_DEPENDECIES = .sh-depend
 
-.sh-depend: ${SH_FILES}
+include ${SH_TEST_DEPENDECIES}
+
+${SH_TEST_DEPENDECIES}: ${SH_FILES}
 	date '+# %F %T %Z' > $@
 	for i in $^; do \
 		echo "$$i: $$(echo $$i | sed -e 's/_[0-9]*\..*$$//' \
@@ -115,7 +117,7 @@ shell-clean:
 	rm -f ${SH_DIFFS}
 
 shell-distclean shell-cleanAll: shell-clean
-	rm -f .depend
+	rm -f ${SH_TEST_DEPENDECIES}
 
 clean: shell-clean
 

@@ -50,9 +50,11 @@ out outputs: ${OUTP_FILES}
 
 # Dependencies for the test files:
 
-include .test-depend
+TEST_DEPENDENCIES = .test-depend
 
-.test-depend: ${INP_FILES} ${OPT_FILES}
+include ${TEST_DEPENDENCIES}
+
+${TEST_DEPENDENCIES}: ${INP_FILES} ${OPT_FILES}
 	date '+# %F %T %Z' > $@
 	for i in $^; do \
 		echo "$$i: $$(echo $$i | sed -e 's/_[0-9]*\..*$$//' \
@@ -157,9 +159,14 @@ ${OUTP_DIR}/%.out: ${TEST_DIR}/%.sh | ${TEST_PREREQUISITES}
 
 #------------------------------------------------------------------------------
 
-.PHONY: test-clean
+.PHONY: test-clean test-distclean
 
 test-clean:
 	rm -f ${DIFF_FILES}
 
+test-distclean: test-clean
+	rm -f ${TEST_DEPENDENCIES}
+
 clean: test-clean
+
+distclean cleanAll: test-distclean
