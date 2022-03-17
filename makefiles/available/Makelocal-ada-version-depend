@@ -4,6 +4,8 @@ ifeq ("${CWD}","")
 CWD := $(shell pwd)
 endif
 
+ADA_PROJECT_VERSION_DEPEND ?= src/project_version.ads
+
 GNATMAKE_PRG_DIR ?= programs
 GNATMAKE_BIN_DIR ?= bin
 
@@ -13,4 +15,4 @@ GNATMAKE_ADA_PROGRAMS ?= \
 GNATMAKE_ADA_EXE ?= \
    ${GNATMAKE_ADA_PROGRAMS:${GNATMAKE_PRG_DIR}/%.adb=${GNATMAKE_BIN_DIR}/%}
 
-${GNATMAKE_ADA_EXE}: src/project_version.ads
+${GNATMAKE_ADA_EXE}: ${ADA_PROJECT_VERSION_DEPEND}
