@@ -1,0 +1,3 @@
+#--*- Makefile -*--
+
+${GNATMAKE_ADA_EXE}: src/package_version.ads

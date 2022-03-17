@@ -1,0 +1,5 @@
+package Project_Version is
+   
+   Version : constant String := "@VERSION@";
+   
+end Project_Version;

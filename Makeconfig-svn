@@ -1,0 +1,15 @@
+#---*- Makefile -*-------------------------------------------------------
+#$Author: saulius $
+#$Date: 2022-03-16 17:27:45 +0200 (Wed, 16 Mar 2022) $
+#$Revision: 294 $
+#$URL: svn+ssh://saulius-grazulis.lt/home/saulius/svn-repositories/makefiles/versions-release-in-filesystem/Makeconfig-version-svn.example $
+#------------------------------------------------------------------------
+
+TRUNK    = ../trunk
+BRANCHES = ../branches
+RELEASES = ${BRANCHES}
+PKG_NAME = $(shell pwd | xargs dirname | xargs basename) 
+
+SVN_VERSION_KEYWORDS = WIP $$Revision: 294 $$ $$URL: svn+ssh://saulius-grazulis.lt/home/saulius/svn-repositories/makefiles/versions-release-in-filesystem/Makeconfig-version-svn.example $$
+
+VERSION_ADA_DIR = src
