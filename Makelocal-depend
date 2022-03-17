@@ -1,3 +1,16 @@
 #--*- Makefile -*--
 
-${GNATMAKE_ADA_EXE}: src/package_version.ads
+ifeq ("${CWD}","")
+CWD := $(shell pwd)
+endif
+
+GNATMAKE_PRG_DIR ?= programs
+GNATMAKE_BIN_DIR ?= bin
+
+GNATMAKE_ADA_PROGRAMS ?= \
+   $(wildcard ${GNATMAKE_PRG_DIR}/*.adb)
+
+GNATMAKE_ADA_EXE ?= \
+   ${GNATMAKE_ADA_PROGRAMS:${GNATMAKE_PRG_DIR}/%.adb=${GNATMAKE_BIN_DIR}/%}
+
+${GNATMAKE_ADA_EXE}: src/project_version.ads
