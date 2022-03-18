@@ -1,3 +1,13 @@
 ... (unreleased)
 
   * Initial release.
+
+  * Added:
+    - xyz2fract  -- convert coordinates to fractional
+    - xyz2ortho  -- convert coordinates to Cartesian
+    - xyzformat  -- apply formatting to floating pt. numbers
+    - xyzpermute -- permute axes and coordinates
+
+  * Implemented:
+    - Processing of the LATTICE and CELL keywords in the XYZ file
+      comments
