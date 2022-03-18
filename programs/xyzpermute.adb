@@ -23,13 +23,16 @@ with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
 with User_Error_Messages;    use User_Error_Messages;
 
+with Project_Version;        use Project_Version;
+
 procedure Xyzpermute is
    
    Unit_Matrix : Matrix3x3 := ((1.0,0.0,0.0),(0.0,1.0,0.0),(0.0,0.0,1.0));
    
    Permutation : Matrix3x3 := Unit_Matrix;
    
-   HELP_PRINTED : exception ;
+   HELP_PRINTED : exception;
+   VERSION_PRINTED : exception;
    
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
@@ -52,6 +55,7 @@ procedure Xyzpermute is
       P("        Specifying exponent part as 0 outputs no exponent at all (as with C '%f' format).");
       New_Line;
       P("    --help                          Print a short help message and exit;");
+      P("    --version                       Print program project version and exit;");
       raise HELP_PRINTED;
    end;
    
@@ -62,11 +66,12 @@ procedure Xyzpermute is
         "-float-fo= -float-f= -float= -floa= -flo= -fl= -f= ";
       Permutation_Option : String := "p: " &
         "-permutation= -permutatio= -permutati= -permutat= " &
-        "-permuta= -permut= -permu= -perm= -per= -pe= -p=";
+        "-permuta= -permut= -permu= -perm= -per= -pe= -p= ";
+      Version_Option : String := "-version -versio -versi -vers -ver -ve -v";
    begin
       loop
          case Getopt (Help_Option & Float_Format_Option &
-                        Permutation_Option) is
+                        Permutation_Option & Version_Option) is
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
@@ -80,6 +85,9 @@ procedure Xyzpermute is
                                       Fraction_Size, Exponent_Size);
                elsif Index("-help", Full_Switch) = 1 then
                   Print_Help;
+               elsif Index("-version", Full_Switch) = 1 then
+                  Put_Line (Command_Name & " version " & Version);
+                  raise VERSION_PRINTED;
                end if;
             when others =>
                exit;
@@ -162,5 +170,6 @@ begin
 
 exception
    when HELP_PRINTED => null;
+   when VERSION_PRINTED => null;
       
 end Xyzpermute;
