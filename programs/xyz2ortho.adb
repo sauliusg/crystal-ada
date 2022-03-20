@@ -201,11 +201,11 @@ begin
                      
                      if Unit_Cell_Given then
                         if Unit_Cell /= File_Unit_Cell then
-                           Warning ("Unit cell given in the file '" &
+                           Warning ("unit cell given in the file '" &
                                       To_String (File_Name) &
                                       "' is different from the one " &
                                       "provided on the command line. " &
-                                      "Taking unit cell from the command line");
+                                      "Taking unit cell from the command line.");
                         end if;
                      else
                         O4F := Matrix_Ortho_From_Fract (File_Unit_Cell);

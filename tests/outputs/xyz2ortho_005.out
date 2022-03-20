@@ -1,4 +1,4 @@
-bin/xyz2ortho: WARNING, Unit cell given in the file 'tests/cases/xyz2ortho_005.inp' is different from the one provided on the command line. Taking unit cell from the command line
+bin/xyz2ortho: WARNING, unit cell given in the file 'tests/cases/xyz2ortho_005.inp' is different from the one provided on the command line. Taking unit cell from the command line.
 45
 2000000 LATTICE: 10.000000  0.000000  0.000000  0.000000 10.000000  0.000000 -1.736482  0.000000  9.848078 
 Nd    0.288617    9.188901    3.269959

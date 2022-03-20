@@ -1,4 +1,4 @@
-bin/xyz2fract: WARNING, Unit cell given in the file 'tests/cases/xyz2fract_012.inp' is different from the one provided on the command line. Taking unit cell from the command line
+bin/xyz2fract: WARNING, unit cell given in the file 'tests/cases/xyz2fract_012.inp' is different from the one provided on the command line. Taking unit cell from the command line.
 45
 2000000 CELL: 10.000000 10.000000 10.000000 90.000000 90.000000 90.000000 
 Nd   -0.103599    0.802856    0.331608

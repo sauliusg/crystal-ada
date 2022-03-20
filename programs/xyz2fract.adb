@@ -199,11 +199,11 @@ begin
                         
                      if Unit_Cell_Given then
                         if Unit_Cell /= Unit_Cell_From_Vectors (Cell_Vectors) then
-                           Warning ("Unit cell given in the file '" &
+                           Warning ("unit cell given in the file '" &
                                       To_String (File_Name) &
                                       "' is different from the one " &
                                       "provided on the command line. " &
-                                      "Taking unit cell from the command line");
+                                      "Taking unit cell from the command line.");
                         end if;
                      else
                         F4O := Invert (Cell_Vectors);
