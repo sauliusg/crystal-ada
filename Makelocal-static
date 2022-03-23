@@ -1,0 +1,13 @@
+#--*- Makefile -*--
+
+# Link the executables statically.
+#
+# USAGE:
+#     make distclean
+#     make static
+
+
+.PHONY: static
+
+static:
+	${MAKE} GNATMAKE_OPTIONS='-largs -static'
