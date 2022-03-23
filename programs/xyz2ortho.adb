@@ -75,7 +75,7 @@ procedure Xyz2ortho is
    end;
    
    procedure Process_Options is
-      Help_Option : String := "-help -hel -he -h ";
+      Help_Option : String := "-help -hel -he -h h ";
       Cell_Option : String := "c: -cell= -cel= -ce= -c= ";
       Float_Format_Option : String := "f: " &
         "-float-format= -float-forma= -float-form= -float-for= " &
@@ -96,6 +96,8 @@ procedure Xyz2ortho is
          case Getopt (Help_Option & Cell_Option & Float_Format_Option &
                         Human_Readable_Option & Machine_Readable_Option &
                         Lattice_Option & Version_Option) is
+            when 'h' =>
+               Print_Help;
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);

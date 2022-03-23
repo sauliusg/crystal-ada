@@ -60,7 +60,7 @@ procedure Xyzpermute is
    end;
    
    procedure Process_Options is
-      Help_Option : String := "-help -hel -he -h ";
+      Help_Option : String := "-help -hel -he -h h ";
       Float_Format_Option : String := "f: " &
         "-float-format= -float-forma= -float-form= -float-for= " &
         "-float-fo= -float-f= -float= -floa= -flo= -fl= -f= ";
@@ -72,6 +72,8 @@ procedure Xyzpermute is
       loop
          case Getopt (Help_Option & Float_Format_Option &
                         Permutation_Option & Version_Option) is
+            when 'h' =>
+               Print_Help;
             when 'f' =>
                Parse_Float_Format (Parameter, Integer_Size, 
                                    Fraction_Size, Exponent_Size);
