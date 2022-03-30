@@ -16,6 +16,7 @@ with Ada.Command_Line;       use Ada.Command_Line;
 with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 with Ada.Strings.Fixed;      use Ada.Strings.Fixed;
 with GNAT.Command_Line;      use GNAT.Command_Line;
+with Ada.Exceptions;         use Ada.Exceptions;
 
 with Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
@@ -24,6 +25,7 @@ with Ada.Unchecked_Deallocation;
 with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
 with File_Selector;          use File_Selector;
+with User_Error_Messages;    use User_Error_Messages;
 
 with Project_Version;        use Project_Version;
 
@@ -32,6 +34,9 @@ procedure XyzFormat is
    HELP_PRINTED : exception;
    VERSION_PRINTED : exception;
    
+   Unhandled_Exception_Status:
+     constant Ada.Command_Line.Exit_Status := 255;
+
    procedure Print_Help is
       procedure P( S : String ) renames Put_Line;
    begin
@@ -117,12 +122,13 @@ procedure XyzFormat is
    procedure Free_File is
       new Ada.Unchecked_Deallocation(File_Type, Access_File_Type);
    
+   File_Name : Unbounded_String;
+   
 begin
    
    Process_Options;
    
    declare
-      File_Name : Unbounded_String;
       Is_File_Processed : Boolean := False;   
       Is_Last_File : Boolean := False;   
    begin
@@ -154,5 +160,15 @@ begin
 exception
    when HELP_PRINTED => null;
    when VERSION_PRINTED => null;
-   
+      
+   when Exception_Occurence : others =>
+      declare
+         Message : String := Exception_Message (Exception_Occurence);
+         Exception_Name_String : String := Exception_Name (Exception_Occurence);
+      begin
+         Error ("in file '" & To_String (File_Name) & "': " & 
+                  Exception_Name_String & ": " & Message,
+                Unhandled_Exception_Status);
+      end;
+
 end XyzFormat;

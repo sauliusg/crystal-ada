@@ -2,5 +2,4 @@
 Test -- just right number of atoms
 6   1.00000000000000E+01  1.00000000000000E+01  1.00000000000000E+01
 7   1.20000000000000E+01  1.20000000000000E+01  9.00000000000000E+00
-
-raised ADA.IO_EXCEPTIONS.END_ERROR : a-tigeli.adb:96
+./bin/xyzformat: ERROR, in file 'tests/data/t2-too-few-atoms.xyz': ADA.IO_EXCEPTIONS.END_ERROR: a-tigeli.adb:96
