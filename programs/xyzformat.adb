@@ -166,9 +166,9 @@ exception
          Message : String := Exception_Message (Exception_Occurence);
          Exception_Name_String : String := Exception_Name (Exception_Occurence);
       begin
-         Error ("in file '" & To_String (File_Name) & "': " & 
-                  Exception_Name_String & ": " & Message,
-                Unhandled_Exception_Status);
+         Error ((if File_Name /= "" then "in file '" & To_String (File_Name) & "': " else "") & 
+           Exception_Name_String & ": " & Message,
+           Unhandled_Exception_Status);
       end;
 
 end XyzFormat;
