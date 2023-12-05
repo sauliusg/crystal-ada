@@ -31,77 +31,37 @@ with Project_Version;        use Project_Version;
 
 procedure Xyz2Distances is
    
+   procedure Help is
+      procedure P (S : String) renames Put_Line;
+   begin
+      P ("Convert an XYZ file into the distance matrix, output the CSV");
+   end;
+   
+   Options : Option_Array :=
+     (
+      1 => Help_Option ("", "--help")
+     );
+   
    Current_File : File_Selector.File_Access;
 
 begin
    
-   Current_File := null;
+   Process_Options (Options, Help'Access);
    
---    Process_Options;
---    
---    declare
---       Is_File_Processed : Boolean := False;
---       Is_Last_File: Boolean;
---    begin
---       loop
---          File_Name := To_Unbounded_String(Get_Argument);
---          Select_File (File_Name, Is_File_Processed => Is_File_Processed,
---                       Is_Last_File => Is_Last_File,
---                       Current_File => Current_File);
---          exit when Is_Last_File;
--- 
---          while not End_Of_File (Current_File.all) loop
---             declare
---                XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
---                Unit_Cell_Known : Boolean := Unit_Cell_Given;
---             begin
---                declare
---                   Lattice_Keyword : String := "LATTICE:";
---                   Comment : String := To_String (XYZ_Atoms.Comment);
---                   Lattice_Keyword_Index : Integer := Index (Comment, Lattice_Keyword);
---                   Parse_Start : Integer := Lattice_Keyword_Index + Lattice_Keyword'Last;
---                   Cell_Vectors : Matrix3x3;
---                begin
---                   if Lattice_Keyword_Index > 0 then
---                      Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
---                         
---                      if Unit_Cell_Given then
---                         if Unit_Cell /= Unit_Cell_From_Vectors (Cell_Vectors) then
---                            Warning ("unit cell given in the file '" &
---                                       To_String (File_Name) &
---                                       "' is different from the one " &
---                                       "provided on the command line. " &
---                                       "Taking unit cell from the command line.");
---                         end if;
---                      else
---                         F4O := Invert (Cell_Vectors);
---                         Unit_Cell := Unit_Cell_From_Vectors (Cell_Vectors);
---                      end if;
---                      
---                      Unit_Cell_Known := True;
---                   end if;
---                end;
---                
---                if not Unit_Cell_Known then
---                   raise UNKNOWN_UNIT_CELL with To_String (XYZ_Atoms.Comment);
---                end if;
---                
---                for I in XYZ_Atoms.Atoms'Range loop
---                   XYZ_Atoms.Atoms(I) := F4O * XYZ_Atoms.Atoms(I);
---                end loop;
---                
---                Put_Atoms (XYZ_Atoms, Unit_Cell, Unit_Cell_Known);
---             end;
---          end loop;
---          
---          if Is_Open (Current_File.all) then
---             Close (Current_File.all);
---          end if;
---          Free_File (Current_File);
---          
---       end loop;
---       
---   end;
+   -- FI is File Index:
+   for FI in 1 .. File_Name_Count loop
+      Current_File := Select_File (FI);
+      
+      while not End_Of_File (Current_File.all) loop
+         declare
+            XYZ_Atoms : XYZ_File_Atoms := Load_Atoms (Current_File.all);
+         begin
+            Put_Line (XYZ_Atoms.Size'Image & " " & Get_File_Name(FI));
+         end;    
+      end loop;
+
+      Close (Current_File);
+   end loop;
    
 exception
    when HELP_PRINTED => null;
