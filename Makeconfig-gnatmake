@@ -1,5 +1,6 @@
 #--*- Makefile -*--
 
 GNATMAKE_SRC_DIR = \
-   src \
-   -Iexternals/ada-option-processor/src
+   externals/ada-option-processor/src \
+   -Isrc \
+#
