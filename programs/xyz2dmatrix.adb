@@ -149,8 +149,11 @@ begin
                   Identifier : String := Comment (Comment'First .. Id_End_Index - 1);
                begin
                   if XYZ.Atoms'Length > Matrix_Size then
-                     raise CONSTRAINT_ERROR with
-                       "too many atoms for structure " & Identifier;
+                     Put_Line (Standard_Error, "WARNING, structure '" & Identifier & "' " &
+                                 "has too many atoms (" & XYZ.Atoms'Length'Image & 
+                                 " instead of " & Matrix_Size'Image & ")");
+                     -- raise CONSTRAINT_ERROR with
+                     --  "too many atoms for structure " & Identifier;
                   end if;
                   Put (Identifier);
                   Put (",");
