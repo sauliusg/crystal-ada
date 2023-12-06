@@ -5,10 +5,6 @@
 -- $URL$
 -- ----------------------------------------------------------------------------
 
--- Option processing example taken from:
--- https://www.adacore.com/gems/gem-138-gnatcoll.command-line
--- S.G. 2021-12-26
-
 pragma Ada_2022;
 
 with Text_Io;                use Text_Io;
@@ -28,6 +24,8 @@ with Option_Processor;       use Option_Processor;
 with File_Selector;          use File_Selector;
 
 with Ada.Numerics.Long_Elementary_Functions;
+
+with Atomic_Numbers;         use Atomic_Numbers;
 
 with Project_Version;        use Project_Version;
 
@@ -135,7 +133,8 @@ begin
                Put ("atmid");
                for I in reverse XYZ.Atoms'Range loop
                   Put (",");
-                  Put (To_String (XYZ.Atoms(I).Atom_Name));
+                  -- Put (To_String (XYZ.Atoms(I).Atom_Name));
+                  Put (Atomic_Number(XYZ.Atoms(I).Atom_Type), 0);
                end loop;
                if Have_Lattice then
                   Parse_Lattice (Comment(Parse_Start..Comment'Last), Cell_Vectors);
@@ -175,7 +174,8 @@ begin
                end if;
                -- Distances between atoms:
                for I in XYZ.Atoms'First .. XYZ.Atoms'Last - 1 loop
-                  Put (To_String (XYZ.Atoms(I).Atom_Name));
+                  -- Put (To_String (XYZ.Atoms(I).Atom_Name));
+                  Put (Atomic_Number(XYZ.Atoms(I).Atom_Type), 0);
                   for J in reverse I + 1 .. XYZ.Atoms'Last loop
                      Put (",");
                      Put (Distance (XYZ.Atoms(I), XYZ.Atoms(J)), 0, 6);
