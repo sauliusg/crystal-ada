@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 
 with Ada.Unchecked_Deallocation;
 
-package File_Selector is
+package File_Name_Selector is
    
    type Access_File_Type is access File_Type;
 
@@ -15,4 +15,4 @@ package File_Selector is
                            Is_Last_File : out Boolean;
                            Current_File : out Access_File_Type );
 
-end File_Selector;
+end File_Name_Selector;

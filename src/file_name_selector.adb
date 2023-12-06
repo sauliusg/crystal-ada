@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded;  use Ada.Strings.Unbounded;
 
 with Ada.Unchecked_Deallocation;
 
-package body File_Selector is
+package body File_Name_Selector is
    
    -- Selects an STDIN for the input file ('Current_File'), or a file
    --  named by 'File_Name', and opens that file.
@@ -33,4 +33,4 @@ package body File_Selector is
       Is_File_Processed := True;
    end;
          
-end File_Selector;
+end File_Name_Selector;

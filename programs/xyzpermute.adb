@@ -20,7 +20,7 @@ with GNAT.Command_Line;      use GNAT.Command_Line;
 with Crystal_Unit_Cell;      use Crystal_Unit_Cell;
 with Float_Format_Option;    use Float_Format_Option;
 with Xyz_File;               use Xyz_File;
-with File_Selector;          use File_Selector;
+with File_Name_Selector;     use File_Name_Selector;
 with User_Error_Messages;    use User_Error_Messages;
 
 with Project_Version;        use Project_Version;
