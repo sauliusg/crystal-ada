@@ -1,4 +1,4 @@
-crystal-ada (unreleased)
+crystal-ada (0.2.0)
 
   * Added:
     - xyz2distances -- convert coordinates to a CSV file with a distance matrix
