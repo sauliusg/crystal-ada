@@ -1,5 +1,5 @@
 package Project_Version is
    
-   Version : constant String := "0.1.0 WIP Revision: 95 URL: svn+ssh://saulius.grazulis.lt/home/saulius/svn-repositories/crystal-ada/trunk/.version ";
+   Version : constant String := "0.1.0";
    
 end Project_Version;
