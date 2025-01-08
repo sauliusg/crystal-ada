@@ -1,5 +1,10 @@
 crystal-ada (unreleased)
 
+  * Added:
+    - xyz2distances -- convert coordinates to a CSV file with a distance matrix
+    - xyz2dmatrix   -- convert multiple coordinate files to a CSV file
+	with a distance matrix array in a cell
+
 crystal-ada (0.1.0)
 
   * Initial release.
